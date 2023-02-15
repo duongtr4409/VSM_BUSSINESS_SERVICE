@@ -1905,6 +1905,13 @@ public class ProcessRequestCustomService {
 //            this.reqdataProcessHisRepository.save(history);
 
             ReqdataProcessHis parentHistory = this.createHistoryParent(customerApproveOption.getReason(), requestData, null, currentStepData, processerRankName, processerOrganiztionName, null);
+                // thêm thông tin người từ chối vào trong lịch sử \\
+            String otpCode = customerApproveOption.getOtp() != null ? customerApproveOption.getOtp() : "";
+            OTP otp = this.otpRepository.customGetAllByRequestDataIdAndOTPCode(requestDataId, otpCode).stream().filter(ele -> {
+                return (ele.getIsActive() != null && ele.getIsActive() == true) && (ele.getIsDelete() == null || ele.getIsDelete() == false);
+            }).findFirst().orElse(null);
+            if(otp != null && otp.getSignData() != null)
+                parentHistory.setProcesserName(otp.getSignData().getSignName());
             this.reqdataProcessHisRepository.save(parentHistory);
 
             // Khi trả lại thành công -> revert lại các file tài liệu chính đã ẩn đi khi ký thành công
