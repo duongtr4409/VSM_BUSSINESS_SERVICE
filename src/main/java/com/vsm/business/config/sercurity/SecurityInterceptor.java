@@ -94,14 +94,10 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
 //        super.afterCompletion(request, response, handler, ex);
 //    }
 
-    MemoryMXBean memBean = ManagementFactory.getMemoryMXBean();
-    MemoryUsage heapMemoryUsage;
     private void writeLogHeap(String prefix){
         try {
             log.info(prefix);
             log.info("feature_log_ Heap Size: total: {}, max: {}, free: {}", Runtime.getRuntime().totalMemory()/1048576, Runtime.getRuntime().maxMemory()/1048576, Runtime.getRuntime().freeMemory()/1048576);
-            if(heapMemoryUsage == null) heapMemoryUsage = memBean.getHeapMemoryUsage();
-            log.info("feature_log_ Heap Use Size: Max: {}, Committed: {}, Used: {}, Init: {}", heapMemoryUsage.getMax()/1048576, heapMemoryUsage.getCommitted()/1048576, heapMemoryUsage.getUsed()/1048576, heapMemoryUsage.getInit()/1048576);
         }catch (Exception e){
             log.error("{}", e);
         }
