@@ -1,0 +1,261 @@
+package com.vsm.business.service.dto;
+
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+/**
+ * A DTO for the {@link com.vsm.business.domain.UserInfo} entity.
+ */
+public class UserInfoDTO implements Serializable {
+
+    private Long id;
+
+    private String name;
+
+    private String fullName;
+
+    private String avatar;
+
+    private String createdName;
+
+    private Instant createdDate;
+
+    private String modifiedName;
+
+    private Instant modifiedDate;
+
+    private String idInMicrosoft;
+
+    private String infoInMicrosoft;
+
+    private Boolean isActive;
+
+    private Boolean isDelete;
+
+    private String tennantCode;
+
+    private String tennantName;
+
+    private TennantDTO tennant;
+
+    private UserInfoDTO created;
+
+    private UserInfoDTO modified;
+
+    private Set<RoleDTO> roles = new HashSet<>();
+
+    private Set<RankDTO> ranks = new HashSet<>();
+
+    private Set<OrganizationDTO> organizations = new HashSet<>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getCreatedName() {
+        return createdName;
+    }
+
+    public void setCreatedName(String createdName) {
+        this.createdName = createdName;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getModifiedName() {
+        return modifiedName;
+    }
+
+    public void setModifiedName(String modifiedName) {
+        this.modifiedName = modifiedName;
+    }
+
+    public Instant getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(Instant modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
+    public String getIdInMicrosoft() {
+        return idInMicrosoft;
+    }
+
+    public void setIdInMicrosoft(String idInMicrosoft) {
+        this.idInMicrosoft = idInMicrosoft;
+    }
+
+    public String getInfoInMicrosoft() {
+        return infoInMicrosoft;
+    }
+
+    public void setInfoInMicrosoft(String infoInMicrosoft) {
+        this.infoInMicrosoft = infoInMicrosoft;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public Boolean getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(Boolean isDelete) {
+        this.isDelete = isDelete;
+    }
+
+    public String getTennantCode() {
+        return tennantCode;
+    }
+
+    public void setTennantCode(String tennantCode) {
+        this.tennantCode = tennantCode;
+    }
+
+    public String getTennantName() {
+        return tennantName;
+    }
+
+    public void setTennantName(String tennantName) {
+        this.tennantName = tennantName;
+    }
+
+    public TennantDTO getTennant() {
+        return tennant;
+    }
+
+    public void setTennant(TennantDTO tennant) {
+        this.tennant = tennant;
+    }
+
+    public UserInfoDTO getCreated() {
+        return created;
+    }
+
+    public void setCreated(UserInfoDTO created) {
+        this.created = created;
+    }
+
+    public UserInfoDTO getModified() {
+        return modified;
+    }
+
+    public void setModified(UserInfoDTO modified) {
+        this.modified = modified;
+    }
+
+    public Set<RoleDTO> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleDTO> roles) {
+        this.roles = roles;
+    }
+
+    public Set<RankDTO> getRanks() {
+        return ranks;
+    }
+
+    public void setRanks(Set<RankDTO> ranks) {
+        this.ranks = ranks;
+    }
+
+    public Set<OrganizationDTO> getOrganizations() {
+        return organizations;
+    }
+
+    public void setOrganizations(Set<OrganizationDTO> organizations) {
+        this.organizations = organizations;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof UserInfoDTO)) {
+            return false;
+        }
+
+        UserInfoDTO userInfoDTO = (UserInfoDTO) o;
+        if (this.id == null) {
+            return false;
+        }
+        return Objects.equals(this.id, userInfoDTO.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id);
+    }
+
+    // prettier-ignore
+    @Override
+    public String toString() {
+        return "UserInfoDTO{" +
+            "id=" + getId() +
+            ", name='" + getName() + "'" +
+            ", fullName='" + getFullName() + "'" +
+            ", avatar='" + getAvatar() + "'" +
+            ", createdName='" + getCreatedName() + "'" +
+            ", createdDate='" + getCreatedDate() + "'" +
+            ", modifiedName='" + getModifiedName() + "'" +
+            ", modifiedDate='" + getModifiedDate() + "'" +
+            ", idInMicrosoft='" + getIdInMicrosoft() + "'" +
+            ", infoInMicrosoft='" + getInfoInMicrosoft() + "'" +
+            ", isActive='" + getIsActive() + "'" +
+            ", isDelete='" + getIsDelete() + "'" +
+            ", tennantCode='" + getTennantCode() + "'" +
+            ", tennantName='" + getTennantName() + "'" +
+            ", tennant=" + getTennant() +
+            ", created=" + getCreated() +
+            ", modified=" + getModified() +
+            ", roles=" + getRoles() +
+            ", ranks=" + getRanks() +
+            ", organizations=" + getOrganizations() +
+            "}";
+    }
+}

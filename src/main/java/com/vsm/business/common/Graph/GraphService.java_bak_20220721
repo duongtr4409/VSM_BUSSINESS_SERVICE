@@ -1,0 +1,832 @@
+package com.vsm.business.common.Graph;
+
+import com.azure.identity.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.microsoft.aad.msal4j.*;
+import com.microsoft.graph.authentication.TokenCredentialAuthProvider;
+import com.microsoft.graph.models.*;
+import com.microsoft.graph.options.Option;
+import com.microsoft.graph.options.QueryOption;
+import com.microsoft.graph.requests.*;
+import com.microsoft.graph.tasks.IProgressCallback;
+import com.microsoft.graph.tasks.LargeFileUploadResult;
+import com.microsoft.graph.tasks.LargeFileUploadTask;
+import com.vsm.business.common.HttpClientHelper;
+import com.vsm.business.domain.AttachmentFile;
+import com.vsm.business.repository.AttachmentFileRepository;
+import com.vsm.business.service.custom.file.UploadFile365CustomService;
+import com.vsm.business.service.custom.mail.bo.MailInfoDTO;
+import okhttp3.Request;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.io.File;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+@Service
+public class GraphService {
+
+    private final Logger log = LoggerFactory.getLogger(GraphService.class);
+
+    @Value("${microsoft.clientId:d435afb3-26ea-44b8-9486-ccaf133c7c56}")
+    private String CLIENT_ID; // = "d435afb3-26ea-44b8-9486-ccaf133c7c56";
+    @Value("${microsoft.authority:https://login.microsoftonline.com/e2c6dedd-f4aa-4599-b436-e649faf0d375/}")
+    private String AUTHORITY; // = "https://login.microsoftonline.com/e2c6dedd-f4aa-4599-b436-e649faf0d375/";
+    @Value("${microsoft.clientSecret:gLe8Q~ggF_gHYL9sXQBQ1aiAbTrv6yQkUiOXdbmK}")
+    private String CLIENT_SECRET; // = "gLe8Q~ggF_gHYL9sXQBQ1aiAbTrv6yQkUiOXdbmK";
+
+    @Value("${microsoft.tenantGuid:e2c6dedd-f4aa-4599-b436-e649faf0d375}")
+    private String TENANT_GUID;
+
+    @Value("${microsoft.username}")
+    private String USERNAME = "eoffice.vcr@2bsystem.com.vn";
+
+    @Value("${microsoft.password}")
+    private String PASSWORD = "1q2w3e4r@@RR";
+
+
+//    private final static String CLIENT_ID = "d435afb3-26ea-44b8-9486-ccaf133c7c56";
+//    private final static String AUTHORITY = "https://login.microsoftonline.com/e2c6dedd-f4aa-4599-b436-e649faf0d375/";
+//    private final static String CLIENT_SECRET = "gLe8Q~ggF_gHYL9sXQBQ1aiAbTrv6yQkUiOXdbmK";
+
+    private final static Set<String> SCOPE = Collections.singleton("https://graph.microsoft.com/.default");
+    private IClientCredential credential;
+    private ConfidentialClientApplication cca;
+    private final String PDF_FORMAT = "pdf";
+    private final String pathApplication = new File(".").getCanonicalPath();
+
+    @Autowired
+    private AttachmentFileRepository attachmentFileRepository;
+
+    public GraphService() throws IOException {
+
+    }
+
+    @PostConstruct
+    public void init() throws IOException {
+        credential = ClientCredentialFactory.createFromSecret(CLIENT_SECRET);
+        cca = ConfidentialClientApplication.builder(CLIENT_ID, credential).authority(AUTHORITY).build();
+    }
+
+    public IAuthenticationResult acquireToken() throws Exception {
+        return acquireToken(SCOPE);
+    }
+
+    public IAuthenticationResult acquireToken(Set<String> scopes) throws Exception {
+        ClientCredentialParameters parameters = ClientCredentialParameters.builder(scopes).skipCache(true).build();
+        return cca.acquireToken(parameters).join();
+    }
+
+    private JSONObject callAPI(Set<String> scopes, URL url) {
+        JSONObject jsObject;
+        try {
+            IAuthenticationResult authenticationResult = acquireToken(scopes);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestProperty("Authorization", "Bearer " + authenticationResult.accessToken());
+            httpURLConnection.setRequestProperty("Accept", "application/json");
+            String response = HttpClientHelper.getResponseStringFromConn(httpURLConnection);
+            int responseCode = httpURLConnection.getResponseCode();
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                return null;
+            }
+            jsObject = HttpClientHelper.processResponse(responseCode, response);
+        } catch (Exception e) {
+            return null;
+        }
+        return jsObject;
+    }
+
+    private JSONObject callAPI(Set<String> scopes, URL url, HttpMethod method) {
+        JSONObject jsObject;
+        try {
+            IAuthenticationResult authenticationResult = acquireToken(scopes);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestProperty("Authorization", "Bearer " + authenticationResult.accessToken());
+            httpURLConnection.setRequestProperty("Accept", "application/json");
+            httpURLConnection.setRequestMethod(method.toString());
+            String response = HttpClientHelper.getResponseStringFromConn(httpURLConnection);
+            int responseCode = httpURLConnection.getResponseCode();
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                return null;
+            }
+            jsObject = HttpClientHelper.processResponse(responseCode, response);
+        } catch (Exception e) {
+            return null;
+        }
+        return jsObject;
+    }
+
+    private JSONObject callAPI(URL url) throws Exception {
+        return callAPI(SCOPE, url);
+    }
+
+    private JSONObject callAPI(URL url, HttpMethod method) throws Exception {
+        return callAPI(SCOPE, url, method);
+    }
+
+    public JSONObject me_Get() throws Exception {
+        URL url = new URL("https://graph.microsoft.com/v1.0/me");
+        return callAPI(url);
+    }
+
+    public JSONObject users() throws Exception {
+        URL url = new URL("https://graph.microsoft.com/v1.0/users");
+        return callAPI(url);
+    }
+
+    public JSONObject groups() throws Exception {
+        URL url = new URL("https://graph.microsoft.com/v1.0/groups");
+        return callAPI(url);
+    }
+
+    public UserCollectionPage getAllUser(){
+        graphClient = this.buildGraphClient();
+        UserCollectionPage userCollectionPage = graphClient.users().buildRequest().get();
+        return userCollectionPage;
+    }
+
+//    public String uploadFile() throws Exception {
+//        if(graphClient == null) graphClient = buildGraphClient();
+//
+//        File file = new File(pathApplication + "\\temp\\Deploy project lên Sharepoint_v1.docx");
+//        InputStream fileStream = new FileInputStream(file);
+//        long streamSize = file.length();
+//
+//        IProgressCallback callback = new IProgressCallback() {
+//            @Override
+//            // Called after each slice of the file is uploaded
+//            public void progress(final long current, final long max) {
+//                System.out.println(
+//                    String.format("Uploaded %d bytes of %d total bytes", current, max)
+//                );
+//            }
+//        };
+//
+//        DriveItemCreateUploadSessionParameterSet uploadParams =
+//            DriveItemCreateUploadSessionParameterSet.newBuilder()
+//                .withItem(new DriveItemUploadableProperties()).build();
+//
+//        UploadSession uploadSession = graphClient
+//            .drive()
+//            .root()
+//            .itemWithPath(file.getName())
+//            .createUploadSession(uploadParams)
+//            .buildRequest()
+//            .post();
+//
+//        LargeFileUploadTask<DriveItem> largeFileUploadTask =
+//            new LargeFileUploadTask<DriveItem>
+//                (uploadSession, graphClient, fileStream, streamSize, DriveItem.class);
+//
+//        LargeFileUploadResult<DriveItem> upload = largeFileUploadTask.upload(0, null, callback);
+//        return upload.responseBody.id;
+//    }
+
+
+    private static GraphServiceClient<Request> graphClient = null;
+    private static TokenCredentialAuthProvider authProvider = null;
+
+    private UsernamePasswordCredential usernamePasswordCredential;
+    private TokenCredentialAuthProvider tokenCredentialAuthProvider;
+
+    public GraphServiceClient buildGraphClient() {
+        if (graphClient != null) return graphClient;
+        try {
+            // Create the auth provider
+//            ClientSecretCredential credential = new ClientSecretCredentialBuilder().clientId(CLIENT_ID).tenantId(TENANT_GUID).clientSecret(CLIENT_SECRET).tokenCachePersistenceOptions(new TokenCachePersistenceOptions()).build();
+//
+//            authProvider = new TokenCredentialAuthProvider(Arrays.asList("https://graph.microsoft.com/.default", ""), credential);
+//
+//            // Build a Graph client
+//            graphClient = GraphServiceClient.builder().authenticationProvider(authProvider).buildClient();
+
+            usernamePasswordCredential = new UsernamePasswordCredentialBuilder().clientId(CLIENT_ID).username(USERNAME).password(PASSWORD).build();
+            tokenCredentialAuthProvider = new TokenCredentialAuthProvider(Arrays.asList("https://graph.microsoft.com/.default", ""), usernamePasswordCredential);
+            graphClient = GraphServiceClient.builder().authenticationProvider(tokenCredentialAuthProvider).buildClient();
+            return graphClient;
+
+//            String client_id = "59caccd6-5951-4de7-b9ee-e6d581756cfa";
+//            String username = "dev.azurevcr@vingroup.net";
+//            String password = "##Thang06@2022#";
+//            String tenantId = "ed6a2939-d153-4f92-94f8-3d790d96c9f8";
+//            usernamePasswordCredential = new UsernamePasswordCredentialBuilder().clientId(client_id).tenantId(tenantId).username(username).password(password).build();
+//            tokenCredentialAuthProvider = new TokenCredentialAuthProvider(Arrays.asList("https://graph.microsoft.com/.default", ""), usernamePasswordCredential);
+//            graphClient = GraphServiceClient.builder().authenticationProvider(tokenCredentialAuthProvider).buildClient();
+//            return graphClient;
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return null;
+        }
+    }
+
+    public GraphServiceClient buildGraphClient_bak() {
+        if (graphClient != null) return graphClient;
+        try {
+            // Create the auth provider
+//            ClientSecretCredential credential = new ClientSecretCredentialBuilder().clientId(CLIENT_ID).tenantId(TENANT_GUID).clientSecret(CLIENT_SECRET).tokenCachePersistenceOptions(new TokenCachePersistenceOptions()).build();
+//
+//            authProvider = new TokenCredentialAuthProvider(Arrays.asList("https://graph.microsoft.com/.default", ""), credential);
+//
+//            // Build a Graph client
+//            graphClient = GraphServiceClient.builder().authenticationProvider(authProvider).buildClient();
+
+            usernamePasswordCredential = new UsernamePasswordCredentialBuilder().clientId(CLIENT_ID).username(USERNAME).password(PASSWORD).build();
+            tokenCredentialAuthProvider = new TokenCredentialAuthProvider(Arrays.asList("https://graph.microsoft.com/.default", ""), usernamePasswordCredential);
+            graphClient = GraphServiceClient.builder().authenticationProvider(tokenCredentialAuthProvider).buildClient();
+            return graphClient;
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return null;
+        }
+    }
+
+    public static String getUserAccessToken() throws Exception {
+        String accesstoken;
+
+        try {
+            URL meUrl = new URL("https://graph.microsoft.com/v1.0/me");
+            accesstoken = authProvider.getAuthorizationTokenAsync(meUrl).get();
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+            throw ex;
+        }
+        return accesstoken;
+    }
+
+    public UserCollectionPage getListUser() {
+        graphClient = this.buildGraphClient();
+        UserCollectionPage userCollectionPage = graphClient.users().buildRequest().get();
+        return userCollectionPage;
+    }
+
+    public File getAttachment(String id) throws IOException {
+        graphClient = this.buildGraphClient();
+        InputStream inputStream1 = graphClient.customRequest("/drive/items/" + id + "/content", InputStream.class).buildRequest().get();
+//        InputStream inputStream = graphClient.drive().items(id).content().buildRequest().get();
+        InputStream inputStream = graphClient.me().drive().items(id).content().buildRequest().get();
+
+        File result = new File(pathApplication + "\\temp\\duowngtora.docx");
+        FileUtils.copyInputStreamToFile(inputStream1, result);
+        return result;
+    }
+
+    public void getFilePDF(HttpServletResponse response, AttachmentFile attachmentFile, String id) throws IOException {
+        LinkedList<Option> requestOptions = new LinkedList<Option>();
+        requestOptions.add(new QueryOption("format", PDF_FORMAT));
+
+        graphClient = this.buildGraphClient();
+//        InputStream inputStream = graphClient.drive().items(id).content().buildRequest(requestOptions).get();
+        InputStream inputStream = graphClient.me().drive().items(id).content().buildRequest(requestOptions).get();
+
+        response.setContentType("application/octet-stream");
+
+        String[] splitFileName = attachmentFile.getFileName().split("\\.");
+        String fileDownLoadName = String.join(".", Arrays.copyOfRange(splitFileName, 0, splitFileName.length - 1)) + ".pdf";
+        response.setHeader("Content-disposition", "attachment; filename=\"" + fileDownLoadName + "\"");
+        response.getOutputStream().write(IOUtils.toByteArray(inputStream));
+    }
+
+    public void getFilePDF_v4(HttpServletResponse response, String id) throws IOException, ExecutionException, InterruptedException {
+        LinkedList<Option> requestOptions = new LinkedList<Option>();
+        requestOptions.add(new QueryOption("format", PDF_FORMAT));
+
+        graphClient = this.buildGraphClient();
+//        InputStream inputStream1 = graphClient.drive().items(id).content().buildRequest(requestOptions).get();
+        InputStream inputStream1 = graphClient.me().drive().items(id).content().buildRequest(requestOptions).get();
+
+//        InputStream inputStream = graphClient.drive().root().itemWithPath("TKCT_TAU_VAO_ROI_CANG_V1.0.docx").content().buildRequest(requestOptions).getAsync().get();
+        InputStream inputStream = graphClient.me().drive().root().itemWithPath("TKCT_TAU_VAO_ROI_CANG_V1.0.docx").content().buildRequest(requestOptions).getAsync().get();
+
+        response.setContentType("application/octet-stream");
+        String fileDownLoadName = "TKCT_TAU_VAO_ROI_CANG_V1.0.pdf";
+        response.setHeader("Content-disposition", "attachment; filename=\"" + fileDownLoadName + "\"");
+        response.getOutputStream().write(IOUtils.toByteArray(inputStream));
+    }
+
+    /**
+     * hàm tạo folder
+     *
+     * @param folderName   : tên folder cần tạo
+     * @param parentItemId : id của folder cha
+     * @return
+     */
+    public DriveItem createFolder(String folderName, String parentItemId) {
+        folderName = folderName.replaceAll("[^A-Za-z0-9]", "_");
+        if (parentItemId == null || parentItemId.isEmpty())
+            parentItemId = UploadFile365CustomService.ROOT_FOLDER_ITEM_ID;
+        graphClient = this.buildGraphClient();
+        DriveItem driveItem = new DriveItem();
+        driveItem.name = folderName;
+        Folder folder = new Folder();
+        driveItem.folder = folder;
+        driveItem.additionalDataManager().put("@microsoft.graph.conflictBehavior", new JsonPrimitive("rename"));
+
+        try {
+            DriveItem result = null;
+            if (parentItemId == null || "".equals(parentItemId.trim())) {
+//                result = graphClient.drive().root().children().buildRequest().post(driveItem);
+                result = graphClient.me().drive().root().children().buildRequest().post(driveItem);
+            } else {
+                result = graphClient.me().drive().items(parentItemId).children().buildRequest().post(driveItem);
+            }
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     *  hàm thực hiện thay đổi file trên office
+     * @param itemId        : itemId của
+     * @param fileContent   : nội dung của file sau khi chỉnh sửa
+     * @return              :
+     * @throws IOException
+     */
+    public DriveItem updateFile(String itemId, byte[] fileContent) throws IOException {
+        graphClient = this.buildGraphClient();
+        DriveItem driveItem = graphClient
+            .me()
+            .drive()
+            .items(itemId)
+            .content()
+            .buildRequest()
+            .put(fileContent);
+        return driveItem;
+    }
+
+    /**
+     * Hàm thực hiện tạo file
+     *
+     * @param fileName     : tên file
+     * @param parentItemId : id của folder chứa file
+     * @param fileContent  : nội dung file (dạng byte[])
+     * @return : itemId của file đã tọa được
+     * @throws IOException
+     */
+    public LargeFileUploadResult<DriveItem> createFile(String fileName, String parentItemId, byte[] fileContent) throws IOException {
+        if (parentItemId == null || parentItemId.isEmpty())
+            parentItemId = UploadFile365CustomService.ROOT_FOLDER_ITEM_ID;
+        graphClient = this.buildGraphClient();
+        InputStream fileStream = new ByteArrayInputStream(fileContent);
+        long streamSize = (long) fileStream.available();
+
+        IProgressCallback callback = new IProgressCallback() {
+            @Override
+            // Called after each slice of the file is uploaded
+            public void progress(final long current, final long max) {
+                System.out.println(String.format("Uploaded %d bytes of %d total bytes", current, max));
+            }
+        };
+
+        DriveItemCreateUploadSessionParameterSet uploadParams = DriveItemCreateUploadSessionParameterSet.newBuilder().withItem(new DriveItemUploadableProperties()).build();
+
+
+        UploadSession uploadSession;
+        if (parentItemId == null || "".equals(parentItemId.trim())) {
+//            uploadSession = graphClient.drive().root().itemWithPath(fileName).createUploadSession(uploadParams).buildRequest().post();
+            uploadSession = graphClient.me().drive().root().itemWithPath(fileName).createUploadSession(uploadParams).buildRequest().post();
+        } else {
+//            uploadSession = graphClient.drive().items(parentItemId).itemWithPath(fileName).createUploadSession(uploadParams).buildRequest().post();
+            uploadSession = graphClient.me().drive().items(parentItemId).itemWithPath(fileName).createUploadSession(uploadParams).buildRequest().post();
+        }
+
+        LargeFileUploadTask<DriveItem> largeFileUploadTask = new LargeFileUploadTask<DriveItem>(uploadSession, graphClient, fileStream, streamSize, DriveItem.class);
+
+        LargeFileUploadResult<DriveItem> upload = largeFileUploadTask.upload(0, null, callback);
+
+        String itemId = upload.responseBody.id;
+
+            // gắn quyền
+        Permission permission = this.grantAccess(itemId);
+        upload.responseBody.webUrl = permission.link.webUrl;
+
+//        return itemId;
+        return upload;
+    }
+
+    /**
+     * Hàm thực hiện xóa file hoặc là Folder
+     *
+     * @param itemId: id của Item cần xóa (có thể là cả folder và file)
+     * @return
+     */
+    public boolean removeItem(String itemId) {
+        graphClient = this.buildGraphClient();
+//        DriveItem result = graphClient.drive().items(itemId).buildRequest().delete();
+        DriveItem result = graphClient.me().drive().items(itemId).buildRequest().delete();
+        return true;
+    }
+
+    /**
+     * Hàm thực hiện copy file hoặc folder
+     *
+     * @param itemIdSource : itemId của file(folder) cần copy
+     * @param itemTarget   : itemId của Folder cần copy đến
+     * @param name         : tên của file(folder) copy được
+     */
+    public DriveItem copyFile(String itemIdSource, String itemTarget, String name) throws IOException {
+        graphClient = this.buildGraphClient();
+        ItemReference parentReference = new ItemReference();
+//        Drive drive = graphClient.drive().buildRequest().get();
+        Drive drive = graphClient.me().drive().buildRequest().get();
+        parentReference.id = itemTarget;
+        parentReference.driveId = drive.id;
+//        DriveItem result = graphClient.drive().items(itemIdSource).copy(DriveItemCopyParameterSet.newBuilder().withName(name).withParentReference(parentReference).build()).buildRequest().post();
+        DriveItem result = graphClient.me().drive().items(itemIdSource).copy(DriveItemCopyParameterSet.newBuilder().withName(name).withParentReference(parentReference).build()).buildRequest().post();
+
+        //DriveItemCollectionPage driveItemCollectionPage = graphClient.drive().items(itemTarget).children().buildRequest().get();
+        JsonElement graphResponseHeaders = result.additionalDataManager().get("graphResponseHeaders");
+        JsonElement location = graphResponseHeaders.getAsJsonObject().get("location");
+        String linkResultCopy = location.getAsJsonArray().get(0).getAsString();
+        DriveItem driveItem = getResultCopy(linkResultCopy);
+
+            // gắn quyền
+        Permission permission = this.grantAccess(driveItem.id);
+        driveItem.webUrl = permission.link.webUrl;
+
+        return driveItem;
+    }
+
+    /**
+     * Hàm thực hiện lấy kết quả coppy file
+     *
+     * @param url
+     * @return
+     * @throws IOException
+     */
+    public DriveItem getResultCopy(String url) throws IOException {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+        }
+        ;
+        URL urlResult = new URL(url);
+        HttpURLConnection httpURLConnection = (HttpURLConnection) urlResult.openConnection();
+        String response = HttpClientHelper.getResponseStringFromConn(httpURLConnection);
+        int responseCode = httpURLConnection.getResponseCode();
+        if (responseCode != HttpURLConnection.HTTP_OK) {
+            return null;
+        }
+        JSONObject jsObject = HttpClientHelper.processResponse(responseCode, response);
+        JSONObject responseMsg = jsObject.getJSONObject("responseMsg");
+        String resourceId = responseMsg.get("resourceId").toString();
+//        DriveItem driveItem = graphClient.drive().items(resourceId).buildRequest().get();
+        DriveItem driveItem = graphClient.me().drive().items(resourceId).buildRequest().get();
+        return driveItem;
+    }
+
+    public DriveItem moveItem(String itemIdSource, String itemTarget, String name) {
+        graphClient = this.buildGraphClient();
+        DriveItem driveItem = new DriveItem();
+        ItemReference parentReference = new ItemReference();
+        parentReference.id = itemTarget;
+        driveItem.parentReference = parentReference;
+
+//        DriveItem result = graphClient.drive().items(itemIdSource).buildRequest().patch(driveItem);
+        DriveItem result = graphClient.me().drive().items(itemIdSource).buildRequest().patch(driveItem);
+
+        return result;
+    }
+
+    /**
+     * hàm lấy dữ liệu file
+     *
+     * @param itemId : id của file cần lấy dữ liệu
+     * @return : dữ liệu file dạng InputStream
+     */
+    public InputStream getFile(String itemId, String format) throws Exception {
+        graphClient = this.buildGraphClient();
+        InputStream inputStream;
+        if (format == null || "".equals(format.trim())) {
+//            inputStream = graphClient.drive().items(itemId).content().buildRequest().get();
+            inputStream = graphClient.me().drive().items(itemId).content().buildRequest().get();
+        } else {
+            graphClient.getHttpProvider();
+            LinkedList<Option> requestOptions = new LinkedList<Option>();
+            requestOptions.add(new QueryOption("format", format));
+//            inputStream = graphClient.drive().items(itemId).content().buildRequest(requestOptions).get();
+            inputStream = graphClient.me().drive().items(itemId).content().buildRequest(requestOptions).get();
+        }
+        return inputStream;
+    }
+
+    /**
+     * Hàm thực hiện xoá item (file hoặc là folder)
+     *
+     * @param id : itemId của Item cần xoá
+     */
+    public void deleteItem(String id) {
+        graphClient = this.buildGraphClient();
+//        DriveItem resultDelete = graphClient.drive().items(id).buildRequest().delete();
+        DriveItem resultDelete = graphClient.me().drive().items(id).buildRequest().delete();
+    }
+
+    /**
+     * Hàm thực hiện đổi tên item (file hoặc là folder)
+     *
+     * @param itemId   : itemId của item cần đổi tên
+     * @param fileName : tên muốn đổi
+     * @return
+     */
+    public DriveItem reNameItem(String itemId, String fileName) {
+        graphClient = this.buildGraphClient();
+        DriveItem driveItem = new DriveItem();
+        driveItem.name = fileName;
+//        DriveItem updateResult = graphClient.drive().items(itemId).buildRequest().patch(driveItem);
+        DriveItem updateResult = graphClient.me().drive().items(itemId).buildRequest().patch(driveItem);
+        return updateResult;
+    }
+
+    /**
+     * Hàm thực hiện lấy đường dẫn xem preview file
+     *
+     * @param itemId : itemId của file cần xem
+     * @return : trả về đường dẫn để xem preview file
+     */
+    public ItemPreviewInfo previewFile(String itemId) {
+        graphClient = this.buildGraphClient();
+        DriveItemPreviewParameterSet driveItemPreviewParameterSet = new DriveItemPreviewParameterSet();
+//        ItemPreviewInfo result = graphClient.drive().items(itemId).preview(driveItemPreviewParameterSet).buildRequest().post();
+        ItemPreviewInfo result = graphClient.me().drive().items(itemId).preview(driveItemPreviewParameterSet).buildRequest().post();
+        return result;
+    }
+
+    /**
+     *
+     */
+    public Permission grantAccess(String itemId) throws UnsupportedEncodingException {
+        graphClient = this.buildGraphClient();
+
+        String type = "edit";
+
+        String scope = "organization";
+
+        Permission permission = graphClient.me().drive().items(itemId)
+            .createLink(DriveItemCreateLinkParameterSet
+                .newBuilder()
+                .withType(type)
+                .withScope(scope)
+                .withExpirationDateTime(null)
+                .withMessage(null)
+                .withRetainInheritedPermissions(null)
+                .build())
+            .buildRequest()
+            .post();
+        return permission;
+    }
+
+
+    // Message (Mail) \\
+    @Value("${microsoft.mail.email-address-send:vanminh.vu@10dd23.onmicrosoft.com}")
+    private String EMAIL_ADDRESS_SEND;          //  địa chỉ mail dùng để gửi mail
+    private String USER_ID = "";                // id của người dùng (dùng để gửi mail)
+
+//    public void getIDUserSendMail() {
+//        graphClient = this.buildGraphClient();
+//        UserCollectionPage userCollectionPage = graphClient.users().buildRequest().get();
+//        User user = userCollectionPage.getCurrentPage().stream().filter(ele -> EMAIL_ADDRESS_SEND.equals(ele.mail)).findFirst().get();
+//        USER_ID = user.id;
+//    }
+
+    /**
+     * Hàm thực hiện chức năng gửi mail
+     *
+     * @param mailInfoDTO: Thông tin trên mail cần gửi
+     * @return
+     */
+    public boolean sendMessage(List<File> files, MailInfoDTO mailInfoDTO) {
+        graphClient = this.buildGraphClient();
+//        Message message = new Message();
+//        message.subject = mailInfoDTO.getSubject();
+//        message.importance = Importance.LOW;
+//        ItemBody body = new ItemBody();
+//        body.contentType = BodyType.HTML;
+//        body.content = this.bindData(mailInfoDTO.getContent(), mailInfoDTO.getProps());
+//        message.body = body;
+//
+//        LinkedList<Recipient> toRecipientsList = new LinkedList<Recipient>();
+//        mailInfoDTO.getEmailAddressTo().forEach(ele -> {
+//            Recipient toRecipients = new Recipient();
+//            EmailAddress emailAddress = new EmailAddress();
+//            emailAddress.address = ele;
+//            toRecipients.emailAddress = emailAddress;
+//            toRecipientsList.add(toRecipients);
+//        });
+//
+//        LinkedList<Recipient> ccRecipientsList = new LinkedList<Recipient>();
+//        if(mailInfoDTO.getEmailAddressCC() != null){
+//            mailInfoDTO.getEmailAddressCC().forEach(ele -> {
+//                Recipient ccRecipients = new Recipient();
+//                EmailAddress emailAddress = new EmailAddress();
+//                emailAddress.address = ele;
+//                ccRecipients.emailAddress = emailAddress;
+//                ccRecipientsList.add(ccRecipients);
+//            });
+//        }
+//
+//        LinkedList<Recipient> bccRecipientsList = new LinkedList<Recipient>();
+//        if(mailInfoDTO.getEmailAddressBCC() != null){
+//            mailInfoDTO.getEmailAddressCC().forEach(ele -> {
+//                Recipient bccRecipients = new Recipient();
+//                EmailAddress emailAddress = new EmailAddress();
+//                emailAddress.address = ele;
+//                bccRecipients.emailAddress = emailAddress;
+//                ccRecipientsList.add(bccRecipients);
+//            });
+//        }
+//
+//        message.toRecipients = toRecipientsList;
+//        message.ccRecipients = ccRecipientsList;
+//        message.bccRecipients = bccRecipientsList;
+//
+//
+//        Message messageIn365 = graphClient.users(USER_ID).messages()
+//            .buildRequest()
+//            .post(message);
+//
+//        // attachmentFile
+////        if(files != null){
+//////            files.forEach(ele -> {
+////            for(File ele : files) {
+////                FileAttachment attachment = new FileAttachment();
+//////                try {
+////                    attachment.name = ele.getName();
+////                    attachment.contentBytes =  Base64.getDecoder().decode("DuowngTora");
+//////                    attachment.contentBytes = FileUtils.readFileToByteArray(ele);
+////
+////                    Attachment attachment1Result = graphClient.users(USER_ID).messages(messageIn365.id).attachments()
+////                        .buildRequest()
+////                        .post(attachment);
+//////                } catch (IOException e) {
+//////                    throw new RuntimeException(e);
+//////                }
+////            }
+//////            });
+////        }
+//
+//
+//        graphClient.users(USER_ID).messages(messageIn365.id).send().buildRequest().post();
+        Message message = new Message();
+        message.subject = "Meet for lunch?";
+        ItemBody body = new ItemBody();
+        body.contentType = BodyType.TEXT;
+        body.content = "The new cafeteria is open.";
+        message.body = body;
+        LinkedList<Recipient> toRecipientsList = new LinkedList<Recipient>();
+        Recipient toRecipients = new Recipient();
+        EmailAddress emailAddress = new EmailAddress();
+        emailAddress.address = "vanduong.nguyen@10dd23.onmicrosoft.com";
+        toRecipients.emailAddress = emailAddress;
+        toRecipientsList.add(toRecipients);
+        message.toRecipients = toRecipientsList;
+        LinkedList<Recipient> ccRecipientsList = new LinkedList<Recipient>();
+        Recipient ccRecipients = new Recipient();
+        EmailAddress emailAddress1 = new EmailAddress();
+        emailAddress1.address = "vanduong.nguyen@10dd23.onmicrosoft.com";
+        ccRecipients.emailAddress = emailAddress1;
+        ccRecipientsList.add(ccRecipients);
+        message.ccRecipients = ccRecipientsList;
+
+        boolean saveToSentItems = false;
+
+        graphClient.users(USER_ID).sendMail(UserSendMailParameterSet.newBuilder().withMessage(message).withSaveToSentItems(saveToSentItems).build()).buildRequest().post();
+
+        return true;
+    }
+
+    @Autowired
+    private JavaMailSender mailSender;
+    private final String ENCODING = "utf-8";
+
+    @Value("${mailServer.email:eoffice.vcr@2bsystem.com.vn}")
+    private String MAIL_FROM;
+
+    public boolean sendMail(List<File> files, MailInfoDTO mailInfoDTO) {
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, ENCODING);
+            helper.setText(mailInfoDTO.getContent(), true);
+            helper.setSubject(mailInfoDTO.getSubject());
+            helper.setFrom(this.MAIL_FROM);
+            helper.setReplyTo(this.MAIL_FROM);
+            String[] emailTo = mailInfoDTO.getEmailAddressTo().stream().toArray(String[]::new);
+            helper.setTo(emailTo);
+            String[] emailCC = mailInfoDTO.getEmailAddressCC().stream().toArray(String[]::new);
+            helper.setCc(emailCC);
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+
+    public boolean sendMail_bak(List<File> files, MailInfoDTO mailInfoDTO) {
+        graphClient = this.buildGraphClient();
+        Message message = new Message();
+        message.subject = mailInfoDTO.getSubject();
+        ItemBody body = new ItemBody();
+        body.contentType = BodyType.HTML;
+        body.content = this.bindData(mailInfoDTO.getContent(), mailInfoDTO.getProps());
+        message.body = body;
+        LinkedList<Recipient> toRecipientsList = new LinkedList<Recipient>();
+        mailInfoDTO.getEmailAddressTo().forEach(ele -> {
+            Recipient toRecipients = new Recipient();
+            EmailAddress emailAddress = new EmailAddress();
+            emailAddress.address = ele;
+            toRecipients.emailAddress = emailAddress;
+            toRecipientsList.add(toRecipients);
+        });
+        message.toRecipients = toRecipientsList;
+
+        if (mailInfoDTO.getEmailAddressCC() != null && !mailInfoDTO.getEmailAddressCC().isEmpty()) {
+            LinkedList<Recipient> ccRecipientsList = new LinkedList<Recipient>();
+            mailInfoDTO.getEmailAddressCC().forEach(ele -> {
+                Recipient ccRecipients = new Recipient();
+                EmailAddress emailAddress = new EmailAddress();
+                emailAddress.address = ele;
+                ccRecipients.emailAddress = emailAddress;
+                ccRecipientsList.add(ccRecipients);
+            });
+            message.ccRecipients = ccRecipientsList;
+        }
+
+        if (mailInfoDTO.getEmailAddressBCC() != null && !mailInfoDTO.getEmailAddressBCC().isEmpty()) {
+            LinkedList<Recipient> bccRecipientsList = new LinkedList<Recipient>();
+            mailInfoDTO.getEmailAddressBCC().forEach(ele -> {
+                Recipient bccRecipients = new Recipient();
+                EmailAddress emailAddress = new EmailAddress();
+                emailAddress.address = ele;
+                bccRecipients.emailAddress = emailAddress;
+                bccRecipientsList.add(bccRecipients);
+            });
+            message.bccRecipients = bccRecipientsList;
+        }
+
+        LinkedList<Attachment> attachmentsList = new LinkedList<Attachment>();
+        if (files != null && !files.isEmpty()) {
+//            files.forEach(ele -> {
+            for (File ele : files) {
+                FileAttachment attachments = new FileAttachment();
+                attachments.name = ele.getName();
+                try {
+                    attachments.contentType = Files.probeContentType(ele.toPath());
+                    byte[] bytes = null;
+                    bytes = Files.readAllBytes(ele.toPath());
+                    attachments.contentBytes = bytes;
+                    attachments.oDataType = "#microsoft.graph.fileAttachment";
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                attachmentsList.add(attachments);
+            }
+//            });
+            AttachmentCollectionResponse attachmentCollectionResponse = new AttachmentCollectionResponse();
+            attachmentCollectionResponse.value = attachmentsList;
+            AttachmentCollectionPage attachmentCollectionPage = new AttachmentCollectionPage(attachmentCollectionResponse, null);
+            message.attachments = attachmentCollectionPage;
+        }
+
+        graphClient.me().sendMail(UserSendMailParameterSet.newBuilder().withMessage(message).withSaveToSentItems(null).build()).buildRequest().post();
+
+        return true;
+    }
+
+    /**
+     * hàm thực hiện binding dữ liệu vào trong content
+     *
+     * @param content: nội dung gốc
+     * @param props    : danh sách binding dữ liệu (key là kí hiệu trong content, value là gì giá cần thay thế tương ứng)
+     * @return content sau khi binding dữ liệu
+     */
+    private String bindData(String content, Map<String, Object> props) {
+        if (props == null) return content;
+        Set<String> keySet = props.keySet();
+        for (String key : keySet) {
+//            String prop = "\\$\\{" + key + "\\}";
+//            content = content.replaceAll(prop, String.valueOf(props.get(key)));
+            content = content.replace(key, String.valueOf(props.get(key)));
+        }
+        return content;
+    }
+
+}

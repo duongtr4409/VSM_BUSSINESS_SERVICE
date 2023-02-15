@@ -1,0 +1,421 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+#
+# More information on profiles: https://www.jhipster.tech/profiles/
+# More information on configuration properties: https://www.jhipster.tech/common-application-properties/
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+feign:
+  circuitbreaker:
+    enabled: true
+  # client:
+  #   config:
+  #     default:
+  #       connectTimeout: 5000
+  #       readTimeout: 5000
+management:
+  endpoints:
+    web:
+      base-path: /management
+      exposure:
+        include: ['configprops', 'env', 'health', 'info', 'jhimetrics', 'logfile', 'loggers', 'prometheus', 'threaddump', 'liquibase']
+  endpoint:
+    health:
+      show-details: when_authorized
+      roles: 'ROLE_ADMIN'
+      probes:
+        enabled: true
+    jhimetrics:
+      enabled: true
+  info:
+    git:
+      mode: full
+  health:
+    group:
+      liveness:
+        include: livenessState
+      readiness:
+        include: readinessState,db
+    mail:
+      enabled: false # When using the MailService, configure an SMTP server and set this to true
+  metrics:
+    export:
+      # Prometheus is the default metrics backend
+      prometheus:
+        enabled: true
+        step: 60
+    enable:
+      http: true
+      jvm: true
+      logback: true
+      process: true
+      system: true
+    distribution:
+      percentiles-histogram:
+        all: true
+      percentiles:
+        all: 0, 0.5, 0.75, 0.95, 0.99, 1.0
+    tags:
+      application: ${spring.application.name}
+    web:
+      server:
+        request:
+          autotime:
+            enabled: true
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+  application:
+    name: VsmBusinessService
+  profiles:
+    # The commented value for `active` can be replaced with valid Spring profiles to load.
+    # Otherwise, it will be filled in by maven when building the JAR file
+    # Either way, it can be overridden by `--spring.profiles.active` value passed in the commandline or `-Dspring.profiles.active` set in `JAVA_OPTS`
+    active: #spring.profiles.active#
+    group:
+      dev:
+        - dev
+        - api-docs
+        # Uncomment to activate TLS for the dev profile
+        #- tls
+  jmx:
+    enabled: false
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: deferred
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate.jdbc.time_zone: UTC
+      hibernate.id.new_generator_mappings: true
+      hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+      # modify batch size as necessary
+      hibernate.jdbc.batch_size: 25
+      hibernate.order_inserts: true
+      hibernate.order_updates: true
+      hibernate.query.fail_on_pagination_over_collection_fetch: true
+      hibernate.query.in_clause_parameter_padding: true
+      hibernate.max_fetch_depth: 4
+      hibernate:
+        enable_lazy_load_no_trans: true
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+#        physical-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+#        implicit-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  messages:
+    basename: i18n/messages
+  main:
+    allow-bean-definition-overriding: true
+  task:
+    execution:
+      thread-name-prefix: vsm-business-service-task-
+      pool:
+        core-size: 2
+        max-size: 50
+        queue-capacity: 10000
+    scheduling:
+      thread-name-prefix: vsm-business-service-scheduling-
+      pool:
+        size: 2
+  thymeleaf:
+    mode: HTML
+  output:
+    ansi:
+      console-available: true
+#  redis: # cài redis docker: $ docker run -p 16379:6379 -d redis:6.0 redis-server --requirepass "mypass"
+#    database: 0
+#    host: 192.168.100.14                                                                                      # cấu hình redis host
+#    port: 16379                                                                                               # cấu hình redis post
+#    password: 123456a@                                                                                            # cấu hình redis pass
+#    timeout: 60000
+server:
+  servlet:
+    session:
+      cookie:
+        http-only: true
+
+# Properties to be exposed on the /info management endpoint
+info:
+  # Comma separated list of profiles that will trigger the ribbon to show
+  display-ribbon-on-profiles: 'dev'
+
+# ===================================================================
+# JHipster specific properties
+#
+# Full reference is available at: https://www.jhipster.tech/common-application-properties/
+# ===================================================================
+
+jhipster:
+  clientApp:
+    name: 'vsmBusinessServiceApp'
+  # By default CORS is disabled. Uncomment to enable.
+  cors:
+#   allowed-origins: "http://localhost:8100,http://localhost:9000"
+    allowed-origins: "http://localhost:9797"
+    allowed-methods: "*"
+    allowed-headers: "*"
+    exposed-headers: "Authorization,Link,X-Total-Count,X-${jhipster.clientApp.name}-alert,X-${jhipster.clientApp.name}-error,X-${jhipster.clientApp.name}-params"
+    allow-credentials: true
+    max-age: 1800
+  mail:
+    from: VsmBusinessService@localhost
+  api-docs:
+    default-include-pattern: ${server.servlet.context-path:}/api/.*
+    management-include-pattern: ${server.servlet.context-path:}/management/.*
+    title: Eoffice_VCR API
+    description: Eoffice_VCR API documentation
+    version: 0.0.1
+    terms-of-service-url:
+    contact-name:
+    contact-url:
+    contact-email:
+    license: unlicensed
+    license-url:
+  security:
+    content-security-policy: "default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:"
+# ===================================================================
+# Application specific properties
+# Add your own application properties here, see the ApplicationProperties class
+# to have type-safe configuration, like in the JHipsterProperties above
+#
+# More documentation is available at:
+# https://www.jhipster.tech/common-application-properties/
+# ===================================================================
+
+# application:
+
+fileServer:
+  url:
+    baseUrl: http://14.162.145.33:10005/FileService
+    file:
+      uploadFile: /file/uploadFile                      # upload file
+      downloadFile: /file/download-file/                # download file
+      deleteFile: /file/delete-file/                    # delete file
+      renameFile: /file/change-fileName/                # change file name
+      restoreFile: /file//undo-delete-file/             # undo delete file
+      detailFile: /file/detail-file/                    # detail file
+      copyFile: /file/copy-file                         # copy file
+    folder:
+      create: /folder/                                  # tạo folder
+      show: /folder/                                    #  show content folder
+      delete: /folder/                                  # xóa folder
+      restore: /folder/undo-delete-folder/              # undo delete folder
+      copy: /folder/copy/                               # copy folder
+      rename: /folder/                                  # change folder name
+
+mailService:
+  url:
+    baseUrl: http://127.0.0.1:9899/api
+    mail:
+      sendMail: /mail                                   # send mail
+      sendMailWithTemplate: /mail-with-template         # send mail with template
+primary-document-code: TAILIEUCHINH                     # mã tài liệu chính (phục vụ lấy file để gửi mail tự động)
+
+microsoft:
+  clientId: d435afb3-26ea-44b8-9486-ccaf133c7c56
+  value: 0b03606a-8a9f-4af3-ab77-8078371be633                                    # token ID
+  tenantGuid: e2c6dedd-f4aa-4599-b436-e649faf0d375
+  clientSecret: gLe8Q~ggF_gHYL9sXQBQ1aiAbTrv6yQkUiOXdbmK
+  authority: https://login.microsoftonline.com/e2c6dedd-f4aa-4599-b436-e649faf0d375/    # authority
+  username: eoffice.vcr@2bsystem.com.vn
+  password: 1q2w3e4r@@RR
+
+  mail:
+    email-address-send: vanduong.nguyen@10dd23.onmicrosoft.com #vanminh.vu@10dd23.onmicrosoft.com             # địa chỉ mail dùng để gửi mail
+
+temp.upload.folder: D:\home\TEMP\EOFICEUPLOAD           # đường dẫn thư mục lưu trữ file tạm
+cron:
+  tab:  0 15 03 * * ?
+  tab-send-mail: 0 00 08 * * ?
+
+system:
+  category:
+    status:
+      KHOITAO: KHOITAO
+      DANGSOAN: DANGSOAN
+      CHOXULY: CHOXULY
+      DAPHEDUYET: DAPHEDUYET
+      DAHOANTHANH: DAHOANTHANH
+      TUCHOI: TUCHOI
+      TRALAI: TRALAI
+      HUYPHEDUYET: HUYPHEDUYET
+      DONGY: DONGY
+  mailtemplate:
+    reject-id: 1                                          # id của biểu mẫu mail mặc định của Trả lại phiếu
+    link-symtem: https://vcr.mobifone.ai/               # link hệ thống khi gửi mail gửi cho khách hàng khi tạo tài khoản
+    link-auto: https://vcr.mobifone.ai/phieu-yeu-cau/phe-duyet/{{id}}      # link phieeus khi guiwr mail tuwj ddoojng
+    da-phe-duyet-code: DAPHEDUYET                         # mã code của biểu mẫu mail đã phê duyệt
+    nguoi-tao-phieu-thu-hoi: NGUOITAOPHIEUTHUHOI          # mã code của biểu mẫu mail thu hồi (người tạo phiếu thu hồi)
+    thu-hoi: THUHOI                                       # mã code của biểu mẫu mail thu hồi (người xử lý phiếu thu hồi)
+    tra-lai: TRALAI                                       # mã code của biểu mẫu mail trả lại
+    xoat-xet: XOATXET                                     # mã code của biểu mẫu mail xóat xét
+    tra-loi-xoat-xet: TRALOIXOATXET                       # mã code của biểu mẫu mail trả lời xoát xét
+  templateform:
+    id-templateform-upload: -1                            # id của biểu mẫu định nghĩa người dùng tự upload file vào tài liệu chính
+    name-templateform-upload: Tài liệu người dùng upload           # tên của biểu mẫu định nghĩa người dùng tự upload file vào tài liệu chính
+    code-templateform-upload: TEMPLATE_FORM_CUSTOMER          # tên của biểu mẫu định nghĩa người dùng tự upload file vào tài liệu chính
+  folder:
+    ROOT: ROOT                                            # tên của folder ROOT trên office 365
+    TEMP_FOLDER: ./temp/                                  # tên của folder chứa các file tạm trên hệ thống
+    TEMP_FOLDER_SIGN_SOFT: ./temp/signfile/               # tên của folder chứa thông tin file ký mềm
+    SIGN_TEMP_FOLDER: ./temp/signfile/                    # tên của folder chứa các file tạm trên hệ thống (ký)
+    FOLDER_RESULT_TEMP: ./temp/signfile/temp/             # tên của folder chứa các file tạm trên hệ thống (kết quả file ký)
+    TEMP_FOLDER_WATERMARK: ./temp/watermark/image_use_by_only.png       # đường dẫn ảnh USE_BY_ONLY
+  otp:
+    link: http://localhost:9797/phieu-yeu-cau/view-customer/{{id}}    #https://vcr.mobifone.ai/phieu-yeu-cau/view-customer/{{id}}     # link gửi kèm OTP
+    htmlCodeOTP: <br><br><p>Mã OTP:&nbsp;<strong>{{OPT_CODE}}</strong></p><p><a href='{{REQUESTDATA_LINK}}' rel='noopener noreferrer nofollow'>Phiếu yêu cầu:&nbsp;{{REQUEST_DATA_CODE}}</a></p>        # mã HTML của phần OTP khi đính kèm file
+    length: 4
+    subject: '[Eoffice VCR] Email xác thực thông tin đăng nhập'
+    content: '<br><br><p>Bạn nhận được mail này khi thực hiện đăng nhập vào hệ thống Eoffice. Nếu bạn không thực hiện thao tác đăng nhập vui lòng bỏ qua và không tiết lộ thông tin với người khác.</p><br><p>Mã xác nhận:&nbsp;<strong>{{OTP_CODE}}</strong></p>'
+    placeholder: '{{OTP_CODE}}'
+  qr-code:
+    link: https://vcr.mobifone.ai/phieu-yeu-cau/chi-tiet/{{id}}
+  sign:
+    sim:
+      mobi:
+        appEndPoint: http://mobica.smart-office.vn/signMobiNew/rest/service                       # app
+        appHost: mss.newtel-ca.vn:9061                                                            # host
+        appKey: UhZ2mmzhu55LvDUQKRleq29Uxh8cFNCHGAwH0bCZMSkonMzc                                  # api key
+        appId: http://smart-office.vn                                                             # api id
+        appName: eoffice-ap                                                                       # app name
+    check:
+      ky-so-code: 0                                     # mã code của kiểu ký số (SignTypeCode)
+      hide-primary-file-code: HIDE_PRIMARY_FILE         # mã code đánh dấu file này là tài liệu chính bị ẩn đi sau khi ký thành công (lưu trong trường tenantCode trong DB)
+  statistic:
+    time-expeire: 24                                    # thời gian để xác định điều kiện phiếu sắp hết hạn
+  file:
+    customer-file-code: CUSTOMER                        # mã file để phân biệt file để khác hàng view (lưu ở trường tenantCode)
+  sync-sap:
+    KHACHHANG: KHACHANG                                 # tên của CategoryGroup cha chứa các BP trong danh mục
+    TRUNGTAM: TRUNGTAM
+    HANGHOA: HANGHOA
+    VIBDRO_CODE: GIANHANG                               # mã danh mục cha chứa danh sách gian hàng
+    VIBDRO_NAME: Gian Hàng                              # tên dánh mục cha chứa danh sách gian hàng
+    PARTNER_CODE: KHACHHANG                             # mã danh mục cha chứa dánh sách khách hàng
+    PARTNER_NAME: Khách Hàng                            # tên danh mục cha chứa danh sách khách hàng
+    PARTNER:
+      is-concat-address: TRUE                           # cờ đánh dấu xem có tạo địa chỉ custom từ những thông tin mà SAP cung cấp ko
+    TTTM_CODE: TTTM                                     # mã danh mục cha chứa dánh sách Trung tâm thương mại
+    TTTM_NAME: Trung Tâm Thương Mại                     # tên danh mục cha chứa danh sách Trung tâm thương mại
+  fill-in:
+    MA_HOP_DONG: \$\{\{req_data_code\}\}                # mã để fill dữ liệu mã phiếu yêu cầu (mã hợp đồng vào file biểu mẫu)
+    IMAGE:
+      HAS_FILL: TRUE                                    # có fill in ảnh vào file ko
+      SIZE_OF_IMAGE: 300000                             # kích cỡ của ảnh
+    KY_HIEU_CHUOI: \$\{\{brand_list_code\}\}
+    NGAN_CACH_CHUOI: \n
+  sync-ad:
+    FEATURE_CREATE_ORG_CHART: false                     # cờ đánh dấu có tạo OrgChart khi đồng bộ AD không
+    ORG_SYNC: VCR                                       # biến đánh dấu đơn vị được đồng bộ (trong department hoặc trong officeLocation)
+    HAS_CHECK_ORG_SYNC: FALSE                            # cờ đánh dấu có kiểm tra phòng ban khi đồng bộ AD ko (nếu thuộc đơn vị trong 'ORG_SYNC' đó mới đồng)
+    UNCATEGORY: Khác
+  plutext:
+    config:
+      host: http://localhost:9016/v1/00000000-0000-0000-0000-000000000000/convert     # link host call plutext
+# application:
+mailServer:
+  host: smtp.office365.com
+  port: 587
+  email: eoffice.vcr@2bsystem.com.vn
+  username: eoffice.vcr@2bsystem.com.vn
+  password: 1q2w3e4r@@RR
+  protocol: smtp
+  isSSL: false
+dr:
+  site:  #
+  id-root-folder: 01QZ34IVZPT72VIRAZCNALKAPTE3X35EEV
+  id-root-site: vingroupjsc.sharepoint.com,67ea0c57-202c-42ab-ad16-096093f182f3,5e889fea-cd7d-4166-893b-fd7dd36c0cce
+  default-sync:
+    is-default: FALSE                                                                                               # cờ đánh dấu xem có tự đồng bộ DataRoom khi không có cấu hình lưu trữ ko
+    driveId-default: b!VwzqZywgq0KtFglgk_GC86Xb2tj3HBBClJ15MclEcXB33947HrF0RZZggpzeC2g9                           # id của drive mặc định đồng bộ DataRoom nếu ko có config
+    itemId-default: 01NHK7J2G7QITLGFEJTJBYJRDS7R3BGJFK                                                            # id của folder mặc định đồng bộ DataRoom nếu ko
+mule:
+  USE-PROXY: FALSE                                         # cờ đánh dấu có dùng PROXY để gọi API đồng bộ Contract với SAP
+  PROXY-SERVER-HOST: http://10.111.127.200                # PROXY HOST
+  PROXY-SERVER-PORT: 9090                                 # PROXY PORT
+graph-api:
+  time-wait-copy: 3000                                    # thời gian chờ để lấy kết quả coppy
+request-data:
+  contract-expire-field-name: ngay_het_han                # biến đánh dấu sẽ lấy trường nào từ form data để lưu vào trường contractExpireTime (ngày hết hạn hợp đồng) trong requetData
+security:
+  query-string:
+    max-size: 100                                         # max size của request khi được truyền lên khi call API ( <0 thì sẽ không check)
+login:
+  max-number-login-fail: 5                                # số lần đăng nhập sai tối đa cho phép
+graph:
+  uri:
+    base: https://graph.microsoft.com/v1.0
+    me: /me
+  mail:
+    sendNum: 5
+    delimiter: <delimiter>
+upload:
+  file:
+    file-extension: docx, xlsx, pptx, pdf, jpg, jpeg        # định dagnj các file được upload
+bp-schedule:
+  folder-sync: ./temp/excel                                 # folder đọc file excel thành dữ liệu
+update-file-name: TRUE                                      # cờ đánh dấu có update lại tên file khi thực hiện lưu biểu mẫu hay không (FALSE = không, khác FALSE = có)
+feature:
+  generate-file-name: TRUE
+  hash-request: TRUE
+  mule:
+    vibdro:
+      store-full-name-business: TRUE                        # cờ đánh dấu có xử lý hay lấy full name từ SAP đồng bộ vào danh mục TTTM, Gian Hàng hay không (TRUE lấy full mà SAP gửi qua, FALSE xử lý để rồi mới lưu)
+      store-rental-object-name: TRUE
+users:
+  mule: mule@vingroup.net
+customer:
+  otp:
+    length: 6
+    expired:
+      day: 30                                               # thời hạn của OTP gửi khách hàng (số ngày)
+      hour: 12                                              # thời hạn của OTP gửi khách hàng (số giờ)
+      minute: 30                                            # thời hạn của OTP gửi khách hàng (số phút)
+sync-contract-sap:
+  api_key: eOPh9QMopl95HuxtZFo2TJaZw1erjHeor                # thông tin api_key để đồng bộ dữ liệu hợp đồng sang SAP
+  client_id: cd71e2507d2c4812bbaecb25ec377610               # thông tin client_id để đồng bộ dữ liệu hợp đồng sang SAP
+  client_secret: C02808548cb74BB0858F5417BE525aBc           # thông tin client_secret để đồng bộ dữ liệu hợp đồng sang SAP
+  url: https://api.vincom.com.vn/api/vcr/v1/sap-re/contract # thông tin url để đồng b ộ dữ liệu hợp đồng sang SAP
+  field-format:
+    date: sign_date, valid_from, valid_to, cash_flow_from, end_of_term, v020_valid_from, v020_valid_to      # các trường cần format về dạng date
+    date-format-regex-db: dd/MM/yyyy                                                                        # dịnh dạng trường date trong DB
+    date-format-regex-sap: yyyyMMdd                                                                         # định dạnh bên SAP
+    number: square, price_per_month, condition_amount, frequency                                            # các trường cần format về number
+    string: tenancy_law, construction_price, s100_unit_price, v020_unit_price                               # các trường cần format về string
+executor:
+  thread-pool: 5                                            # số lượng luồng chạy song song khi clone file cho phiếu yêu cầu
+role-request:
+  check-role: FALSE                                          # cờ đánh dấu có kiểm tra tính năng phân quyền dữ liệu hay không (TRUE: có, FALSE: không)
+email_admin_user_init_role: administrator                                # email của người dùng được gắn quyền khi khỏi chạy proejct
+feature_role:
+  file_init_feature: ./temp/feature/adminFeature.json           # đường dẫn file chứa dữ liệu init feature
+  role_code_full_feature: SYSTEM_FULL_FEATURE                   # role code của quyền có full feature
+mail_warning:
+  day_work: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday    # dánh sách ngày làm việc trong tuần
+  limit_day: 2
+  mail_template_code_waring: CANHBAOQUAHAN                        # mã code của biểu mẫu mail quá hạn
+cargo:                                                            # import hàng hóa dịch vụ
+  construction_cargo_name: Hàng hóa dịch vụ xây dựng            # tên danh mục hàng hóa xây dựng
+  construction_cargo_code: HANG_HOA_DICH_VU_XAY_DUNG            # mã danh mục hàng hóa xây dựng
+  me_cargo_name: Hàng hóa ME                                    # tên danh mục hàng hóa ME
+  me_cargo_code: HANG_HOA_ME                                    # mã danh mục hàng hóa ME
+  import_file_type: xlsx                                        # định dạnh file dùng để import dữ liệu hàng hóa

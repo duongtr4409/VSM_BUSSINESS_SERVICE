@@ -1,0 +1,13 @@
+.husky/
+.idea/
+.jhipster/
+.mvn/
+.svn/
+app/
+node_modules/
+target/
+temp/
+wBackup/
+VSM_BUSINESS_SERVICE - Copy*.rar
+src/test/
+src/main/resources/config/liqui*

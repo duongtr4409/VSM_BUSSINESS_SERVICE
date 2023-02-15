@@ -1,0 +1,448 @@
+package com.vsm.business.service.dto;
+
+import java.io.Serializable;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+/**
+ * A DTO for the {@link com.vsm.business.domain.StepData} entity.
+ */
+public class StepDataDTO implements Serializable {
+
+    private Long id;
+
+    private String stepDataCode;
+
+    private String stepDataName;
+
+    private Long stepOrder;
+
+    private Instant timeActive;
+
+    private Double processingTerm;
+
+    private Instant precessingTermTime;
+
+    private Boolean isRequiredSignature;
+
+    private Boolean isBack;
+
+    private Boolean isAuthorizedApproval;
+
+    private Boolean isExamine;
+
+    private Boolean isEdit;
+
+    private Boolean isRequestModify;
+
+    private Boolean isSendMail;
+
+    private Boolean isProcessRecover;
+
+    private Boolean isCreateTFSTask;
+
+    private String organizationCode;
+
+    private String organizationName;
+
+    private String rankCode;
+
+    private String rankName;
+
+    private String description;
+
+    private String createdName;
+
+    private Instant createdDate;
+
+    private String modifiedName;
+
+    private Instant modifiedDate;
+
+    private Boolean isActive;
+
+    private Boolean isDelete;
+
+    private String tennantCode;
+
+    private String tennantName;
+
+    private StepDataDTO nextStep;
+
+    private ProcessDataDTO processData;
+
+    private RequestDataDTO requestData;
+
+    private TennantDTO tennant;
+
+    private UserInfoDTO created;
+
+    private UserInfoDTO modified;
+
+    private StepInProcessDTO stepInProcess;
+
+    private Set<UserInfoDTO> userInfos = new HashSet<>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getStepDataCode() {
+        return stepDataCode;
+    }
+
+    public void setStepDataCode(String stepDataCode) {
+        this.stepDataCode = stepDataCode;
+    }
+
+    public String getStepDataName() {
+        return stepDataName;
+    }
+
+    public void setStepDataName(String stepDataName) {
+        this.stepDataName = stepDataName;
+    }
+
+    public Long getStepOrder() {
+        return stepOrder;
+    }
+
+    public void setStepOrder(Long stepOrder) {
+        this.stepOrder = stepOrder;
+    }
+
+    public Instant getTimeActive() {
+        return timeActive;
+    }
+
+    public void setTimeActive(Instant timeActive) {
+        this.timeActive = timeActive;
+    }
+
+    public Double getProcessingTerm() {
+        return processingTerm;
+    }
+
+    public void setProcessingTerm(Double processingTerm) {
+        this.processingTerm = processingTerm;
+    }
+
+    public Instant getPrecessingTermTime() {
+        return precessingTermTime;
+    }
+
+    public void setPrecessingTermTime(Instant precessingTermTime) {
+        this.precessingTermTime = precessingTermTime;
+    }
+
+    public Boolean getIsRequiredSignature() {
+        return isRequiredSignature;
+    }
+
+    public void setIsRequiredSignature(Boolean isRequiredSignature) {
+        this.isRequiredSignature = isRequiredSignature;
+    }
+
+    public Boolean getIsBack() {
+        return isBack;
+    }
+
+    public void setIsBack(Boolean isBack) {
+        this.isBack = isBack;
+    }
+
+    public Boolean getIsAuthorizedApproval() {
+        return isAuthorizedApproval;
+    }
+
+    public void setIsAuthorizedApproval(Boolean isAuthorizedApproval) {
+        this.isAuthorizedApproval = isAuthorizedApproval;
+    }
+
+    public Boolean getIsExamine() {
+        return isExamine;
+    }
+
+    public void setIsExamine(Boolean isExamine) {
+        this.isExamine = isExamine;
+    }
+
+    public Boolean getIsEdit() {
+        return isEdit;
+    }
+
+    public void setIsEdit(Boolean isEdit) {
+        this.isEdit = isEdit;
+    }
+
+    public Boolean getIsRequestModify() {
+        return isRequestModify;
+    }
+
+    public void setIsRequestModify(Boolean isRequestModify) {
+        this.isRequestModify = isRequestModify;
+    }
+
+    public Boolean getIsSendMail() {
+        return isSendMail;
+    }
+
+    public void setIsSendMail(Boolean isSendMail) {
+        this.isSendMail = isSendMail;
+    }
+
+    public Boolean getIsProcessRecover() {
+        return isProcessRecover;
+    }
+
+    public void setIsProcessRecover(Boolean isProcessRecover) {
+        this.isProcessRecover = isProcessRecover;
+    }
+
+    public Boolean getIsCreateTFSTask() {
+        return isCreateTFSTask;
+    }
+
+    public void setIsCreateTFSTask(Boolean isCreateTFSTask) {
+        this.isCreateTFSTask = isCreateTFSTask;
+    }
+
+    public String getOrganizationCode() {
+        return organizationCode;
+    }
+
+    public void setOrganizationCode(String organizationCode) {
+        this.organizationCode = organizationCode;
+    }
+
+    public String getOrganizationName() {
+        return organizationName;
+    }
+
+    public void setOrganizationName(String organizationName) {
+        this.organizationName = organizationName;
+    }
+
+    public String getRankCode() {
+        return rankCode;
+    }
+
+    public void setRankCode(String rankCode) {
+        this.rankCode = rankCode;
+    }
+
+    public String getRankName() {
+        return rankName;
+    }
+
+    public void setRankName(String rankName) {
+        this.rankName = rankName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCreatedName() {
+        return createdName;
+    }
+
+    public void setCreatedName(String createdName) {
+        this.createdName = createdName;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getModifiedName() {
+        return modifiedName;
+    }
+
+    public void setModifiedName(String modifiedName) {
+        this.modifiedName = modifiedName;
+    }
+
+    public Instant getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(Instant modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public Boolean getIsDelete() {
+        return isDelete;
+    }
+
+    public void setIsDelete(Boolean isDelete) {
+        this.isDelete = isDelete;
+    }
+
+    public String getTennantCode() {
+        return tennantCode;
+    }
+
+    public void setTennantCode(String tennantCode) {
+        this.tennantCode = tennantCode;
+    }
+
+    public String getTennantName() {
+        return tennantName;
+    }
+
+    public void setTennantName(String tennantName) {
+        this.tennantName = tennantName;
+    }
+
+    public StepDataDTO getNextStep() {
+        return nextStep;
+    }
+
+    public void setNextStep(StepDataDTO nextStep) {
+        this.nextStep = nextStep;
+    }
+
+    public ProcessDataDTO getProcessData() {
+        return processData;
+    }
+
+    public void setProcessData(ProcessDataDTO processData) {
+        this.processData = processData;
+    }
+
+    public RequestDataDTO getRequestData() {
+        return requestData;
+    }
+
+    public void setRequestData(RequestDataDTO requestData) {
+        this.requestData = requestData;
+    }
+
+    public TennantDTO getTennant() {
+        return tennant;
+    }
+
+    public void setTennant(TennantDTO tennant) {
+        this.tennant = tennant;
+    }
+
+    public UserInfoDTO getCreated() {
+        return created;
+    }
+
+    public void setCreated(UserInfoDTO created) {
+        this.created = created;
+    }
+
+    public UserInfoDTO getModified() {
+        return modified;
+    }
+
+    public void setModified(UserInfoDTO modified) {
+        this.modified = modified;
+    }
+
+    public StepInProcessDTO getStepInProcess() {
+        return stepInProcess;
+    }
+
+    public void setStepInProcess(StepInProcessDTO stepInProcess) {
+        this.stepInProcess = stepInProcess;
+    }
+
+    public Set<UserInfoDTO> getUserInfos() {
+        return userInfos;
+    }
+
+    public void setUserInfos(Set<UserInfoDTO> userInfos) {
+        this.userInfos = userInfos;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof StepDataDTO)) {
+            return false;
+        }
+
+        StepDataDTO stepDataDTO = (StepDataDTO) o;
+        if (this.id == null) {
+            return false;
+        }
+        return Objects.equals(this.id, stepDataDTO.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id);
+    }
+
+    // prettier-ignore
+    @Override
+    public String toString() {
+        return "StepDataDTO{" +
+            "id=" + getId() +
+            ", stepDataCode='" + getStepDataCode() + "'" +
+            ", stepDataName='" + getStepDataName() + "'" +
+            ", stepOrder=" + getStepOrder() +
+            ", timeActive='" + getTimeActive() + "'" +
+            ", processingTerm=" + getProcessingTerm() +
+            ", precessingTermTime='" + getPrecessingTermTime() + "'" +
+            ", isRequiredSignature='" + getIsRequiredSignature() + "'" +
+            ", isBack='" + getIsBack() + "'" +
+            ", isAuthorizedApproval='" + getIsAuthorizedApproval() + "'" +
+            ", isExamine='" + getIsExamine() + "'" +
+            ", isEdit='" + getIsEdit() + "'" +
+            ", isRequestModify='" + getIsRequestModify() + "'" +
+            ", isSendMail='" + getIsSendMail() + "'" +
+            ", isProcessRecover='" + getIsProcessRecover() + "'" +
+            ", isCreateTFSTask='" + getIsCreateTFSTask() + "'" +
+            ", organizationCode='" + getOrganizationCode() + "'" +
+            ", organizationName='" + getOrganizationName() + "'" +
+            ", rankCode='" + getRankCode() + "'" +
+            ", rankName='" + getRankName() + "'" +
+            ", description='" + getDescription() + "'" +
+            ", createdName='" + getCreatedName() + "'" +
+            ", createdDate='" + getCreatedDate() + "'" +
+            ", modifiedName='" + getModifiedName() + "'" +
+            ", modifiedDate='" + getModifiedDate() + "'" +
+            ", isActive='" + getIsActive() + "'" +
+            ", isDelete='" + getIsDelete() + "'" +
+            ", tennantCode='" + getTennantCode() + "'" +
+            ", tennantName='" + getTennantName() + "'" +
+            ", nextStep=" + getNextStep() +
+            ", processData=" + getProcessData() +
+            ", requestData=" + getRequestData() +
+            ", tennant=" + getTennant() +
+            ", created=" + getCreated() +
+            ", modified=" + getModified() +
+            ", stepInProcess=" + getStepInProcess() +
+            ", userInfos=" + getUserInfos() +
+            "}";
+    }
+}

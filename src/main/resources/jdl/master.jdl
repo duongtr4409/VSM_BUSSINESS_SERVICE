@@ -1,0 +1,232 @@
+/**
+ * The application configuration.
+ * @author A true hipster
+ */
+application {
+	config {
+		baseName VsmBussinessService
+        applicationType microservice
+        authenticationType jwt
+        databaseType sql
+		prodDatabaseType oracle
+		jhiPrefix vsm
+        serverPort 8080
+		enableSwaggerCodegen true
+		buildTool maven
+	}
+	entities *
+paginate * with pagination
+dto * with mapstruct
+service * with serviceClass
+search * with elasticsearch
+service * with serviceImpl
+}
+
+/**
+ * The User entity.
+ * @author A true hipster
+ */
+entity User {
+	/** id */
+	id Long
+	/** username */
+	username String unique required
+	/** password */
+	password String required
+	/** firstName */
+	firstName String required
+	/** lastName */
+	lastName String required
+	/** email */
+	email String required
+	/** phoneNumber */
+	phoneNumber String required
+	/** isActive */
+	isActive Boolean
+	/** flag */
+	flag Integer
+	/** created_id */
+	createdId Long
+	/** created_time */
+	createdTime LocalDate
+}
+/**
+ * The Role entity.
+ * @author A true hipster
+ */
+entity Role {
+	/** id */
+	id Long
+	/** roleName */
+	roleName String required
+	/** isEnable */
+	isEnable Boolean
+	/** created_id */
+	createdId Long
+	/** created_time */
+	createdTime LocalDate
+}
+/**
+ * The Rank entity.
+ * @author A true hipster
+ */
+entity Rank {
+	/** id */
+	id Long
+	/** name */
+	name String required
+	/** created_id */
+	createdId Long
+	/** created_time */
+	createdTime LocalDate
+}
+/**
+ * The RequestType entity.
+ * @author A true hipster
+ */
+entity RequestType {
+	/** id */
+	id Long
+	/** name */
+	name String required
+	/** created_id */
+	createdId Long
+	/** created_time */
+	createdTime LocalDate
+}
+/**
+ * The Request entity.
+ * @author A true hipster
+ */
+entity Request {
+	/** id */
+	id Long
+	/** name */
+	name String
+	/** created_id */
+	createdId Long
+	/** created_time */
+	createdTime LocalDate
+}
+/**
+ * The StepCategory entity.
+ * @author A true hipster
+ */
+entity StepCategory {
+	/** id */
+	id Long
+	/** name */
+	name String required
+	/** descripttion */
+	descripttion String
+	/** created_id */
+	createdId Long
+	/** created_time */
+	createdTime LocalDate
+}
+/**
+ * The Step entity.
+ * @author A true hipster
+ */
+entity Step {
+	/** id */
+	id Long
+	/** isEnable */
+	isEnable Boolean
+	/** canReject */
+	canReject Boolean
+	/** canUpdate */
+	canUpdate Boolean
+	/** canPass */
+	canPass Boolean
+	/** created_id */
+	createdId Long
+	/** created_time */
+	createdTime LocalDate
+}
+/**
+ * The Process entity.
+ * @author A true hipster
+ */
+entity Process {
+	/** id */
+	id Long
+	/** name */
+	name String required
+	/** created_id */
+	createdId Long
+	/** created_time */
+	createdTime LocalDate
+}
+/**
+ * The Form entity.
+ * @author A true hipster
+ */
+entity Form {
+	/** id */
+	id Long
+	/** name */
+	name String
+	/** created_id */
+	createdId Long
+	/** created_time */
+	createdTime LocalDate
+}
+/**
+ * The FormField entity.
+ * @author A true hipster
+ */
+entity FormField {
+	/** id */
+	id String
+	/** name */
+	name String
+	/** type */
+	type String
+	/** isRequired */
+	isRequired Boolean
+	/** created_id */
+	createdId Long
+	/** created_time */
+	createdTime LocalDate
+}
+/**
+ * The FormData entity.
+ * @author A true hipster
+ */
+entity FormData {
+	/** id */
+	id String
+	/** data */
+	data String
+	/** created_id */
+	createdId Long
+	/** created_time */
+	createdTime LocalDate
+}
+/**
+ * Many to many relationship.
+ */
+relationship ManyToMany {
+	User to Role
+	Role to Role
+	User to Rank
+	FormField to FormData
+}
+/**
+ * One to many relationship.
+ */
+relationship OneToMany {
+	Step to User
+	Process to Step
+	Request to Form
+	Form to FormField
+}
+/**
+ * Many to one relationship.
+ */
+relationship ManyToOne {
+	RequestType to Request
+	StepCategory to Step
+	Request to Process
+}

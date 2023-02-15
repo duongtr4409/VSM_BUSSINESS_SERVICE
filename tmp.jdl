@@ -1,0 +1,2323 @@
+entity Field {	//  dữ liệu danh mục các trường trong form
+	id Long,
+    objectSchema TextBlob,
+    fieldCode String,
+    fieldName String,
+    description String,		// mô tả
+    createdName String,
+	createdOrgName String,
+	createdRankName String,
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean, 	// cờ đánh dấu Field có bị xóa đi không: True: đã xóa, False: chưa xóa
+	version Long,
+    		
+            // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity Form {	// dữ liệu danh mục các form (biểu mẫu)
+	id Long,
+    objectSchema TextBlob,		// lưu thông tin định dạng của Form (dạng Object Json Schema)
+    objectModel TextBlob, 		// Lưu thông tin dữ liệu mặc định của Form(dữ liệu mặc định của các Field trong Form dạng Object Json)
+    option TextBlob,			// lưu thông  tin cấu hình của Form
+    FormCode String,			// mã Form 	
+    FormName String,			// tên Form
+	mappingInfo TextBlob,		// thông tin mapping (lưu dạng JSON)
+    description String,			// mô tả
+    createdName String,
+	createdOrgName String,
+	createdRankName String,
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean, 	// cờ đánh dấu Form có bị xóa đi không: True: đã xóa, False: chưa xóa
+    version Long,
+	
+                // phục vụ Saas
+	tennantCode String, 	// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity FieldInForm {		// bảng móc nối quan hệ n-n Filed-Form
+	id Long,
+    fieldInFormCode String,		// mã trường dữ liệu
+    fieldInFormName String,		// tên trường dữ liệu
+    objectSchema TextBlob,			// lưu thông tin định dạng của Field trong Form (dạng Object Json Schema)
+    objectModel TextBlob,			// lưu thông tin dữ liệu mặc định của Field trong Form (dạng Object Json)
+    option TextBlob,				// lưu thông tin cấu hình tùy chọn của Field
+    description String,				// mô tả
+    nameOfField String,				// tên của trường dữ liệu trong Form
+    fieldPattern String,			// dịnh dạng dữ liệu của trường dữ liệu
+    required String,				// field có bắt buộc nhập không
+	order Long,						// stt của field trong E-form
+    createdName String,
+	createdOrgName String,
+	createdRankName String,
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+	row Long,					// thứ tự hàng của field (ở hàng bao nhiêu) 
+	col Long,					// thứ tự cột của field (ở cột bao nhiêu)
+    
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity Pattern {				// bảng danh mục mục các định dạng trường nhập liệu
+	id Long,
+	patternCode String, 			// mã định dạng
+	patternName String,				// tên định dạng
+	patternValue String,			// giá trị định dạng
+	description String,				// mô tả
+	createdName String,
+	createdOrgName String,
+	createdRankName String,
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+	isActive Boolean,
+	isDelete Boolean
+}
+
+	// user \\
+entity Rank {
+	id Long,
+    rankCode String,
+    rankName String,
+    createdName String,
+	createdOrgName String,
+	createdRankName String,
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean,
+    
+                    // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity Role {
+	id Long,
+    roleCode String,
+    roleName String,
+	roleType String,
+	isHaveView Boolean,				// được xem
+	isHaveEdit Boolean,				// được chỉnh sửa
+	isHaveDelete Boolean,				// được xóa
+	isHaveDownload Boolean,			// được tải xuống
+	isAutoAdd Boolean,				// cờ đánh dấu có tự động thêm quyền này vào cho người dùng mới không
+    requestList String,				// quyền được dùng những request nào (dạng JSON)
+	organizationList String,		// quyền được dùng cho những organization nào (dạng JSON)
+	createdName String,			
+	createdOrgName String,
+	createdRankName String,
+    createdDate Instant ,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean,
+    
+                    // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+
+entity Feature {				// tính năng của hệ thống
+	id Long,
+	featureName String,	// tên chức năng
+	featureCode String,	// mã chức năng
+	link String,				// link
+	isDefault String,			// có phải mặc định không
+	description String,			// mô tả
+	featureType String,			// loại tính năng (quản trị/ người dùng/ ...)
+	featureTypeCode String,		// mã loại tính năng
+	featureTypeName String,	// tên loại tính năng
+	
+	createdName String,			
+	createdOrgName String,
+	createdRankName String,
+    createdDate Instant ,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean,
+    
+                    // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+
+entity Organization {	// đơn vị
+	id Long,
+    organizationCode String, 	// mã đơn vị
+    organizationName String, 	// tên đơn vị
+    orgParentCode String,		// mã đơn vị cha 
+    orgParentName String, 		// tên đơn vị cha
+	isSyncAD Boolean,			// cờ đánh dấu đơn vị có phải đồng bộ từ AD sang không
+	description String,			// mô tả
+    createdName String,
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean,
+    
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+/*
+//entity Account {
+//	id Long unique,
+//    userName String required unique,
+//    passWord String,
+//    isLock Boolean,
+//    createdId Long required,
+//    createdName String,
+//    createdDate Instant required,
+//    modifiedId Long,
+//	modifiedName String,
+//    modifiedDate Instant,
+//    isActive Boolean,
+//}
+*/
+
+entity UserInfo {
+	id Long,
+    name String,
+	fullName String,
+	address String,				// địa chỉ
+	contactAddress String,		// địa chỉ liên hệ
+	identification String,		// (giấy tờ nhận biết)căn cước công dân/ mã số thuế/ chứng minh thư/ ...
+	issuseDate Instant,			// ngày cấp
+	issuseOrg String,			// đơn vị cấp
+	fax String,					// số fax
+	avatar String,				// ảnh đại diện
+	email String,				// địa chỉ mail
+	userName String,			// tên tài khoản
+	password String,			// mật khẩu
+	passwordEncode String,		// mật khẩu mã hóa
+	expiryDate Instant,			// thời hạn sử dụng
+	numberOfLoginFailed Long,	// số lần đã đang nhập thất bại
+	description String,			// mô tả
+	isLocked Boolean,			// cờ đánh dấu tài khoản có đang khóa hay không
+	userTypeName String,		// tên loại tài khoản
+	userTypeCode String,		// mã loại tài khoản
+	userType String,			// loại tài khoản (1: nhân viên VCR, 2: khách hàng)
+	signTypeName String,		// tên lại hình ký
+	signTypeCode String,		// mã loại hình ký
+	signType String,			// loại hình ký (1: ký số, 2: ký HSM, ...)
+	signFolder String,			// thông tin forder chứa thông tin ký mềm
+    createdName String,
+	createdOrgName String,		// tên đơn vị của người tạo
+	createdRankName String,		// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+	idInMicrosoft String, 		// id của user trong Microsoft 365
+	oDataContext String,		// @odata.context trong Microsoft 365
+	businessPhones String,		// businessPhones trong Microsoft 365 (nhiều phần  tử -> lưu dạng mảng) -> dùng JSON.parse() để lấy dữ
+	displayName String,			// displayName trong Microsoft 365
+	givenName String,			// givenName trong Microsoft 365
+	jobTitle String,			// jobTitle trong Microsoft 365
+	mail String,				// mail trong Microsoft 365
+	mobilePhone String,			// mobilePhone trong Microsoft 365
+	officeLocation String,		// officeLocation trong Microsoft 365
+	preferredLanguage String,	// preferredLanguage trong Microsoft 365
+	surname String,				// surname trong Microsoft 365
+	userPrincipalName String,	// userPrincipalName trong Microsoft 365
+	infoInMicrosoft TextBlob,		// thông tin trong Microsoft 365(dạng JSON)
+    isActive Boolean,
+    isDelete Boolean,
+    
+              // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity UserGroup {				// nhóm người dùng
+	id Long,
+	groupName String,				// tên nhóm người dùng
+	groupCode String,				// mã nhóm người dùng
+	groupAvatar String,				// avatar nhóm
+	description String,				// mô tả
+	isAutoAdd Boolean,				// có tự thêm khi tạo người dùng mới không
+    createdName String,
+	createdOrgName String,			// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+	isDelete Boolean,
+}
+
+entity SignatureInfomation {			// thông tin chữ ký
+	id Long,
+	signType String,				// loại hình ký
+	signTypeCode String,			// mã loại hình ký số
+	signTypeName String,			// tên loại hình ký số
+	seriOrCode String,				// seri hoặc mã
+	ownerName String,				// tên người/ đơn vị sở hữa chữ ký
+	signDataText TextBlob,			// chữ ký
+	infomation String,				// thông tin ngừoi ký (dạng JSON)
+	expiryDate Instant,				// hạn sử dụng
+	mstOrSdt String,				// mã số thuế/ số điện thoại (mã số thuế với ký token, số điện thoại với ký sim)
+	isDefault Boolean,				// có phải là thông tin ký mặc định không
+	description String,				// mô tả
+    createdName String,
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+	isDelete Boolean,
+}
+
+	// end User \\
+
+    
+    
+	// ProcessInfo Quy Trình \\
+entity UserInStep {		// quy định user nào có trong bước nào
+	id Long,
+	fullName String, 			// tên người xử lý
+	email String,				// mail người xử lý
+	avatar String,				// avatar người xử lý
+	orgName String,				// tên phòng ban người xử lý
+	rankName String,			// tên vai trò người xử lý
+    description String,			// mô tả
+    createdName String,
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+	isDelete Boolean,
+    
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,			// tên đơn vị
+}
+
+entity StepInProcess {	// dữ liệu các bước quy trình
+	id Long,
+    stepOrder Long, 				// stt của bước trong quy trình
+    stepInProcessCode String,
+    stepInProcessName String,
+    processingTerm Double 			// hạn xử lý từ thời gian bắt đầu bước quy trình
+    processingActiveTime Instant, 	// thời gian bước xử lý bắt đầu được active (quy trình chuyển đến bưóc này)
+    processingTermTime Instant,		// hạn xử lý sau khi tính toán từ processingTerm
+    isRequiredSignature Boolean, 	// Có yêu cầu ký số ko: True: có, False: không
+    isBack Boolean, 				// Có cho phép trả lại hay không: True: có, False: không
+    isAuthorizedApproval Boolean, 	// có cho phép duyệt ủy quyền hay không: True: có, False: không
+    isExamine Boolean,				// có cho phép gửi yêu cầu soát xét hay không
+	isConsult Boolean,				// có cho phép gửi yêu cầu xin ý kiến hay không
+    isEdit Boolean,					// có cho phép cán bộ phê duyệt chỉnh sửa hay không
+    isRequestModify Boolean, 		// có cho phép yêu cầu sửa đổi bổ sung không
+	isSendMail Boolean,				// có cho phép gửi mail hay không (nút bấm)
+	isReSend Boolean,				// có cho phép gửi lại hay không
+
+	isAutoSendMail Boolean,			// có gửi mail tự động hay không (mẫu mail sẽ theo trạng thái tiếp theo của phiếu (một trạng thái sẽ có 1 mẫu mail))
+	isAttachFilePDF Boolean,		// có đính kèm file dạng PDF vào mail hay không	
+		
+	isSendNoticePriority Boolean,	// có gửi thông báo khẩn, cấp tốc hay không (nút bấm)
+	sendNoticePriorityType String,	// mẫu mail khẩn sẽ gửi (lưu id tham chiếu đến bảng MailTemplate)
+	
+	isCreateOTPLink Boolean,		// có tạo OTP và link không 
+	isSendOTP Boolean,				// có gửi mã OTP không
+	
+	isExportPDF Boolean,			// có cho xuất file PDF không (nút bấm)
+	isAddQRCode Boolean,			// có thêm QRCode vào file ko
+	isAddWaterMark Boolean,			// có thêm watterMark vào file ko
+	isAddHistory Boolean,			// có thêm trang lịch sử xử lý vào file ko
+	
+	isProcessSaveDoc Boolean,		// có xử lý, lưu trữ công văn
+	isChangeProcess Boolean,		// có chuyển người xử lý hay không (nút bấm)
+	isSaveDoc Boolean,				// có lưu trữ văn bản hay không (nút bấm)
+	isCreateReport Boolean,			// có tạo tờ trình không (nút bấm)
+	isCreateOfficalDispath Boolean,	// có tạo công văn không (nút bấm)
+	
+	isCreateContract Boolean,		// có tạo hợp đồng không (nút bấm)
+	contractType String,			// loại hợp đồng sẽ tạo (id của loại )
+	processOfContract String,		// quy trình mà hợp đồng sẽ áp dụng
+	createContractType String,		// kiểu tạo hợp đồng (1: tạo tất cả, 2: chỉ tạo những hợp đồng được phê duyệt)
+	
+	isProcessRecover Boolean,		// có cho phép xử lý yêu cầu thu hồi phiếu hay không
+	isRecall Boolean,				// có cho phép thực hiện thu hồi phiếu hay không (nút bấm)
+    isCreateTFSTask Boolean,		// có tạo task trên TFS hay không (nút bấm)
+	
+	isDeny Boolean,					// có cho phép từ chối không
+	optionDeny Long,				// lựa chọn khi thực hiện từ chối (-1: về bước đầu, -2: tiếp tục, còn lại : chỉ định bước tiếp theo (sẽ là stt của bước))
+	
+	isSendMailCustomer Boolean,		// có gửi mail cho khách hàng không
+	
+	isSyncSap Boolean,				// cờ đánh dấu có đồng bộ hợp đồng sang SAP không
+	
+	isApprove Boolean,				// có được thực hiện phê duyệt không
+	isManageStamp Boolean,			// quản lý đóng dấu hay không
+	isChangeStatus Boolean,			// có cho phép thay đổi trạng thái hay không
+	//isCreateContract Boolean,		// có tạo hợp đồng sau khi hoàn thành bước hay không
+	//contractType Long				// loại hợp đồng tạo ra nếu cho phép tạo hợp đồng sau bước
+	organizationCode String, 		// mã đơn xử lý
+    organizationName String,		// tên đơn vị xử lý
+    rankCode String,				// mã vai trò xử lý
+    rankName String,				// tên vai trò xủ lý
+    description String				// mô tả
+    createdName String,
+	createdOrgName String,			// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,				// bước có được phép sử dụng không	
+    isDelete Boolean,				// bước có bị xóa đi không 
+	version Long,
+	
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity Step {		// dữ liệu danh mục các bước quy trình
+	id Long,
+    stepCode String,
+    stepName String,
+  	processingTerm Double 			// hạn xử lý từ thời gian bắt đầu bước quy trình
+    processingTermTime Instant,		// hạn xử lý sau khi tính toán từ processingTerm và timeActive
+    isRequiredSignature Boolean, 	// Có yêu cầu ký số ko: True: có, False: không
+    isBack Boolean, 				// Có cho phép trả lại hay không: True: có, False: không
+    isAuthorizedApproval Boolean, 	// có cho phép duyệt ủy quyền hay không: True: có, False: không
+    isExamine Boolean,				// có cho phép gửi yêu cầu soát xét hay không
+	isConsult Boolean,				// có cho phép gửi yêu cầu xin ý kiến hay không
+    isEdit Boolean,					// có cho phép cán bộ phê duyệt chỉnh sửa hay không
+	isRequestModify Boolean, 		// có cho phép yêu cầu sửa đổi bổ sung không
+	isSendMail Boolean,				// có cho phép gửi mail hay không (nút bấm)
+	isReSend Boolean,				// có cho phép gửi lại hay không
+
+	isAutoSendMail Boolean,			// có gửi mail tự động hay không (mẫu mail sẽ theo trạng thái tiếp theo của phiếu (một trạng thái sẽ có 1 mẫu mail))
+	isAttachFilePDF Boolean,		// có đính kèm file dạng PDF vào mail hay không	
+		
+	isSendNoticePriority Boolean,	// có gửi thông báo khẩn, cấp tốc hay không (nút bấm)
+	sendNoticePriorityType String,	// mẫu mail khẩn sẽ gửi (lưu id tham chiếu đến bảng MailTemplate)
+	
+	isCreateOTPLink Boolean,		// có tạo OTP và link không 
+	isSendOTP Boolean,				// có gửi mã OTP không
+	
+	isExportPDF Boolean,			// có cho xuất file PDF không (nút bấm)
+	isAddQRCode Boolean,			// có thêm QRCode vào file ko
+	isAddWaterMark Boolean,			// có thêm watterMark vào file ko
+	isAddHistory Boolean,			// có thêm trang lịch sử xử lý vào file ko
+	
+	isProcessSaveDoc Boolean,		// có xử lý, lưu trữ công văn
+	isChangeProcess Boolean,		// có chuyển người xử lý hay không (nút bấm)
+	isSaveDoc Boolean,				// có lưu trữ văn bản hay không (nút bấm)
+	isCreateReport Boolean,			// có tạo tờ trình không (nút bấm)
+	isCreateOfficalDispath Boolean,	// có tạo công văn không (nút bấm)
+	
+	isCreateContract Boolean,		// có tạo hợp đồng không (nút bấm)
+	contractType String,			// loại hợp đồng sẽ tạo (id của loại )
+	processOfContract String,		// quy trình mà hợp đồng sẽ áp dụng
+	createContractType String,		// kiểu tạo hợp đồng (1: tạo tất cả, 2: chỉ tạo những hợp đồng được phê duyệt)
+	
+	isProcessRecover Boolean,		// có cho phép xử lý yêu cầu thu hồi phiếu hay không
+	isRecall Boolean,				// có cho phép thực hiện thu hồi phiếu hay không (nút bấm)
+    isCreateTFSTask Boolean,		// có tạo task trên TFS hay không (nút bấm)
+	
+	isDeny Boolean,					// có cho phép từ chối không
+	optionDeny Long,				// lựa chọn khi thực hiện từ chối (1: về bước đầu, 2: tiếp tục, 3: chỉ định bước tiếp theo)
+	
+	isSendMailCustomer Boolean,		// có gửi mail cho khách hàng không
+	
+	isSyncSap Boolean,				// cờ đánh dấu có đồng bộ hợp đồng sang SAP không
+	
+	isApprove Boolean,				// có được thực hiện phê duyệt không
+	isManageStamp Boolean,			// quản lý đóng dấu hay không
+	isChangeStatus Boolean,			// có cho phép thay đổi trạng thái hay không
+	//isCreateContract Boolean,		// có tạo hợp đồng sau khi hoàn thành bước hay không
+	//contractType Long				// loại hợp đồng tạo ra nếu cho phép tạo hợp đồng sau bước
+	organizationCode String, 		// mã đơn xử lý
+    organizationName String,		// tên đơn vị xử lý
+    rankCode String,				// mã vai trò xử lý
+    rankName String,				// tên vai trò xủ lý
+    description String				// mô tả
+    createdName String,
+	createdOrgName String,			// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,				// bước này có được phép sử dụng không
+	isDelete Boolean,				// bước có bị xóa đi không
+	version Long,					
+     
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity ProcessInfo {	// dữ liệu danh mục Quy Trình
+	id Long,
+    processCode String,
+    processName String,
+    description String, 	// mô tả
+    createdName String,
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,		// đánh dấu xem quy trình có được phép sử dụng không (được phép chọn cho mẫu yêu cầu không)
+    isDelete Boolean, 		// cờ đánh dấu quy trình có bị xóa đi không: True: đã xóa, False: chưa xóa
+    numberRequest Long,		// số lượng mẫu yêu cầu sử dụng quy trình này (có thể dùng để thống kê, báo cáo) ?
+    version Long,
+	
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+	// end ProcessInfo Quy Trình \\
+    
+    // Biểu mẫu \\
+entity TemplateForm {	// file biểu mẫu
+	id Long,
+    TemplateFormCode String,	// mã biểu mẫu
+    TemplateFormName String, 	// tên biểu mẫu
+    fileExtension String, 		// định dạng file (word, excel, pdf, ..)
+    path String, 				// folder lưu file template
+    fullPath String,			// đường dãn đầy đủ của file
+    ofice365Path String,		// link trong Ofice 365
+	mappingInfo TextBlob,		// thông tin mapping dữ liệu EForm và file biểu mẫu (lưu dạng JSON)
+    description String, 		// mô tả
+    createdName String,
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean, 		// cờ đánh dấu biểu mẫu có bị xóa đi không: True: đã xóa, False: chưa xóa
+    version Long,
+	
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+    // end Biểu mẫu \\
+    
+    // Request Yêu cầu \\
+entity Request {	// dữ liệu danh mục Yêu cầu
+	id Long,
+    requestCode String,
+    requestName String,
+	avatarPath String,				// đường dẫn ảnh
+    directoryPath String,			// thư mục lưu trữ
+	idDirectoryPath String,			// id thư mục trên Office 365
+    description String, 			// mô tả
+	isCreateOutgoingDoc Boolean, 	// có tạo công văn đi hay không
+	ruleGenerateCode String,		// quy tắc tạo mã
+	ruleGenerateAttachName String,	// quy tắc tạo tên file tài liệu chính của phiếu yêu cầu
+	mappingInfo TextBlob,			// thông tin mapping dữ liệu EForm và file biểu mẫu (lưu dạng JSON)
+	sapMapping TextBlob,			// thoong tin mapping dữ liệu với SAP (lưu dạng JSON)
+	dataRoomPath String,			// đường dẫn dataRoom đồng bộ
+	dataRoomId String,				// id dataRoom đồng bộ (item ID)
+	dataRoomDriveId String,			// id dataRoom đồng bộ (drive ID)
+	isSyncSap Boolean,				// cờ đánh dấu loại yêu cầu có cần đồng bộ sang SAP ko
+    createdName String,
+	createdOrgName String,			// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean, 				// cờ đánh dấu mẫu yêu cầu có bị xóa đi không: True: đã xóa, False: chưa xóa
+    numberRequestData Long,			// số lượng phiếu yêu cầu theo mẫu yêu cầu này (thống kế số lượng yêu cầu được tạo theo mẫu này) ?
+    version Long,
+	contractExpireFieldName String,		// mã(tên) trường sẽ lấy giá trị lưu vào contractExpireTime trong RequestData		
+	plotOfLandNumber String,			// quy tắc tạo mã số lô
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity RequestType {	// dữ liệu loại yêu cầu
+	id Long,
+    requestTypeCode String,
+    requestTypeName String,
+	avatarPath String,				// đường dẫn ảnh
+    description String,				// mô tả
+    createdName String,
+	createdOrgName String,			// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean, 			// đánh dấu loại yêu cầu này có đang bị xóa không
+ 	numberRequest Long			//Thống kê số lượng mẫu yêu cầu "Request" thuộc "nhóm yêu cầu" này
+ 	numberRequestData Long		//Thống kê số lượng phiếu yêu cầu "RequestData" thuộc "nhóm yêu cầu" này 
+    version Long,
+	
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity RequestGroup {	// dữ liệu nhóm yêu cầu
+	id Long,
+    requestGroupCode String,
+    requestGroupName String,
+	avatarPath String,				// đường dẫn ảnh
+    description String,				// mô tả
+    createdName String,
+	createdOrgName String,			// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean				// đánh dấu loại yêu cầu này có đang bị xóa không
+    numberRequestType Long		//Thống kê số lượng loại yêu cầu "RequestType" thuộc "nhóm yêu cầu" này
+  	numberRequest Long				// Thống kê số lượng mẫu yêu cầu "Request" thuộc "loại yêu cầu" này
+  	numberRequestData Long			//Thống kê số lượng phiếu yêu cầu "RequestData" thuộc "loại yêu cầu" này 
+    version Long,
+	
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+    // end Request Yêu cầu \\
+    
+	// Dữ liệu quy trình \\
+entity ProcessData {
+	id Long,
+    processDataCode String,
+    processDataName String,
+    description String,		// mô tả
+	roundNumber Long,		// số thứ tự vòng
+    createdName String,
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean				// đánh dấu loại yêu cầu này có đang bị xóa không
+    
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,			// tên đơn vị
+}
+
+entity StepData {
+	id Long,
+    stepDataCode String,			// mã
+    stepDataName String,			// tên'
+	stepOrder Long,					// thứ tự của bước
+	roundNumber Long,				// số thứ tự vòng
+    timeActive Instant,				// thời gian bước được active
+    processingTerm Double 			// hạn xử lý từ thời gian bắt đầu bước quy trình
+    processingTermTime Instant,		// hạn xử lý sau khi tính toán từ processingTerm và timeActive
+    isRequiredSignature Boolean, 	// Có yêu cầu ký số ko: True: có, False: không
+    isBack Boolean, 				// Có cho phép trả lại hay không: True: có, False: không
+    isAuthorizedApproval Boolean, 	// có cho phép duyệt ủy quyền hay không: True: có, False: không
+    isExamine Boolean,				// có cho phép gửi yêu cầu soát xét hay không
+	isConsult Boolean,				// có cho phép gửi yêu cầu xin ý kiến hay không
+    isEdit Boolean,					// có cho phép cán bộ phê duyệt chỉnh sửa hay không
+    isRequestModify Boolean, 		// có cho phép yêu cầu sửa đổi bổ sung không
+	isSendMail Boolean,				// có cho phép gửi mail hay không (nút bấm)
+	isReSend Boolean,				// có cho phép gửi lại hay không
+
+	isAutoSendMail Boolean,			// có gửi mail tự động hay không (mẫu mail sẽ theo trạng thái tiếp theo của phiếu (một trạng thái sẽ có 1 mẫu mail))
+	isAttachFilePDF Boolean,		// có đính kèm file dạng PDF vào mail hay không	
+		
+	isSendNoticePriority Boolean,	// có gửi thông báo khẩn, cấp tốc hay không (nút bấm)
+	sendNoticePriorityType String,	// mẫu mail khẩn sẽ gửi (lưu id tham chiếu đến bảng MailTemplate)
+	
+	isCreateOTPLink Boolean,		// có tạo OTP và link không 
+	isSendOTP Boolean,				// có gửi mã OTP không
+	
+	isExportPDF Boolean,			// có cho xuất file PDF không (nút bấm)
+	isAddQRCode Boolean,			// có thêm QRCode vào file ko
+	isAddWaterMark Boolean,			// có thêm watterMark vào file ko
+	isAddHistory Boolean,			// có thêm trang lịch sử xử lý vào file ko
+	
+	isProcessSaveDoc Boolean,		// có xử lý, lưu trữ công văn
+	isChangeProcess Boolean,		// có chuyển người xử lý hay không (nút bấm)
+	isSaveDoc Boolean,				// có lưu trữ văn bản hay không (nút bấm)
+	isCreateReport Boolean,			// có tạo tờ trình không (nút bấm)
+	isCreateOfficalDispath Boolean,	// có tạo công văn không (nút bấm)
+	
+	isCreateContract Boolean,		// có tạo hợp đồng không (nút bấm)
+	contractType String,			// loại hợp đồng sẽ tạo (id của loại )
+	processOfContract String,		// quy trình mà hợp đồng sẽ áp dụng
+	createContractType String,		// kiểu tạo hợp đồng (1: tạo tất cả, 2: chỉ tạo những hợp đồng được phê duyệt)
+	
+	isProcessRecover Boolean,		// có cho phép xử lý yêu cầu thu hồi phiếu hay không
+	isRecall Boolean,				// có cho phép thực hiện thu hồi phiếu hay không (nút bấm)
+    isCreateTFSTask Boolean,		// có tạo task trên TFS hay không (nút bấm)
+	
+	isDeny Boolean,					// có cho phép từ chối không
+	optionDeny Long,				// lựa chọn khi thực hiện từ chối (1: về bước đầu, 2: tiếp tục, 3: chỉ định bước tiếp theo)
+	
+	isSendMailCustomer Boolean,		// có gửi mail cho khách hàng không
+	
+	isSyncSap Boolean,				// cờ đánh dấu có đồng bộ hợp đồng sang SAP không
+	
+	isApprove Boolean,				// có được thực hiện phê duyệt không
+	isManageStamp Boolean,			// quản lý đóng dấu hay không
+	isChangeStatus Boolean,			// có cho phép thay đổi trạng thái hay không
+	//isCreateContract Boolean,		// có tạo hợp đồng sau khi hoàn thành bước hay không
+	//contractType Long				// loại hợp đồng tạo ra nếu cho phép tạo hợp đồng sau bước
+	organizationCode String, 		// mã đơn xử lý
+    organizationName String,		// tên đơn vị xử lý
+    rankCode String,				// mã vai trò xử lý
+    rankName String,				// tên vai trò xủ lý
+    description String				// mô tả
+    createdName String,
+	createdOrgName String,			// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,				// bước nào trong quy trình đang cần xử lý	
+	
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,			// tên đơn vị
+}
+
+entity ResultOfStep{		// thông tin kết quả xử lý của từng người trong quy trình
+	id Long,
+	action String,				// hành động xử lý (đồng ý, từ chối, phê duyệt, ...)
+	actionName String,			// tên hành động
+	excutorName String,			// người thực hiện
+	excutorRankName String,		// tên chức vụ của người thực hiện
+	executorOrgName String,		// tên đơn vị của người thực hiện
+	excuteDate Instant,			// thời gian thực hiện
+	
+				// phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,			// tên đơn vị
+}
+
+	// end dữ liệu quy trình \\
+    
+    // Người Làm TT khai báo (Yêu Cầu xử lý) \\
+entity RequestData {	// thông tin yêu cầu của người dùng
+	id Long,
+    requestDataCode String, 		// ánh xạ từ Request
+    requestDataName String,			// ánh xạ từ RequestName (ánh xạ từ RequestData)
+    directoryPath String, 			// thư mục lưu trữ (ánh xạ từ RequestData)
+	idDirectoryPath String,			// id của thư mục lưu trữ trên office 365
+	ruleGenerateAttachName String,	// quy tắc tạo tên file tài liệu chính của phiếu yêu cầu (ánh xạ từ Request)
+	numberAttach Long,				// số lượng file tài liệu chính (hộ trợ generate tên file)
+	currentRound Long,				// vòng hiện tại
+	title String,					// tiều đề (bắt buộc có)
+    description TextBlob,			// mô tả (bắt buộc có)
+	signType String,				// loại hình ký
+	signTypeName String,			// tên loại hình ký
+	signTypeCode String,			// mã loại hình ký
+	requestTypeName String,			// tên lại yêu cầu
+	requestTypeCode String,			// mã loại yêu cầu
+	requestGroupName String,		// tên nhóm yêu cầu
+	requestGroupCode String,		// mã nhóm yêu cầu
+	isCreateOutgoingDoc Boolean, 	// có tạo công văn đi hay không
+	isApprove Boolean,				// phiếu đã được phê duyệt hay chưa
+	approverName String,			// tên người thực hiện phê duyệt
+	approverOrgName String,			// tên phòng ban của người thực hiện phê duyệt
+	approverRankName String,		// tên chức danh của người thực hiện phê duyệt
+	isRevoked Boolean,				// phiếu đã bị thu hồi hay chưa
+	revokerName String,				// tên người thực hiện thu hồi
+	revokerOrgName String,			// tên đơn vị của người thực hiện thu hồi
+	revokerRankName String,			// tên chức danh của người thực hiện thu hồi phiếu
+    statusName String, 				// Tên trạng thái
+    oldStatus Long, 				// Trạng thái cũ
+    objectSchema TextBlob,			// DDL form (dạng JSON)
+    objectModel TextBlob,			// data form (dạng JSON)
+    expiredTime Instant,			// thời điểm hết hạn của bước xử lý đang active của phiếu yêu cầu này (khi chuyển bước quy trình sẽ update lại trường này) 
+	isDone Boolean,					// cờ đánh dấu phiếu đã hoàn thành hay chưa
+	timeDone Instant,				// thời gian hoàn thành phiếu
+	mappingInfo TextBlob,			// thông tin mapping (dạng JSON)
+	sapMapping TextBlob,			// thông tin mapping SAP (dạng JSON)
+	dataRoomPath String,			// đường dẫn dataRoom
+	dataRoomId String,				// id dataRoom đồng bộ (item ID)
+	dataRoomDriveId String,			// id dataRoom đồng bộ (drive ID)
+	contractNumber String,			// số hợp đồng khi đồng bộ sang SAP
+	resultSyncContract Boolean,		// kết quả đồng bộ với SAP (null: chưa từng đồng bộ | false: đồng bộ thất bại | true: đồng bộ thành  công)
+	contractExpireTime Instant,		// ngày hết hạn hợp đồng
+	plotOfLandNumber String,		// số lô
+	isSyncSap Boolean,				// cờ đánh dấu có đồng bộ sang SAP không
+	createdName String,
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean, 				// cờ đánh dấu phiếu yêu cầu có bị xóa không: True: đã xóa, False: chưa xóa
+    
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,			// tên đơn vị
+}
+
+entity Status {		// dữ liệu danh mục trạng thái của phiếu yêu cầu 
+	id Long,
+    statusCode String, 			// mã trạng thái
+    statusName String,			// tên trang thái
+	statusType String,			// loại trạng thái (trạng thái này ảnh hưởng đến PYC ntn (vd: Đóng PYC, Đang xử lý))
+	statusColor String,			// mã màu của trạng thái hiển thị trên giao diện
+    description String,			// mô tả	
+    createdName String,
+	createdOrgName String,			// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean, 	// cờ đânhs dấu phiếu yêu cầu có bị xóa không: True: đã xóa, False: chưa xóa
+		
+        // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity FormData {				// Dữ liệu trong form người dùng đã khai.
+	id Long,
+    FormDataCode String,		// ánh xạ từ Form
+    formDateName String,		// ánh xạ từ Form
+    objectSchema TextBlob,		// DDL form (dạng JSON)
+    objectModel TextBlob,		// data form (dạng JSON)   
+    option TextBlob,			// ánh xạ từ Form
+	mappingInfo TextBlob,		// thông tin mapping (dạng JSON)
+	description String,			// mô tả
+    createdName String,
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean,
+    
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity FieldData {				// dữ liệu trong field người dùng đã khai
+	id Long,
+    fieldDataCode String,			// ánh xạ từ FieldInForm
+    fieldDataName String,			// ánh xạ từ FieldInForm
+    objectSchema TextBlob,			// DDL field (dạng OBJECT JSON SCHEMA)
+    objectModel TextBlob,			// data field (dạng JSON)    
+    option TextBlob,				// ánh xạ từ FieldInForm thông tin cấu hình của Form
+    description String,				// mô tả
+    nameOfField String,				// tên của trường dữ liệu trong Form (ánh xạ từ FieldInForm)
+    fieldPattern String,			// dịnh dạng dữ liệu của trường dữ liệu (ánh xạ từ FieldInForm)
+    required String,				// field có bắt buộc nhập không
+	order Long,						// stt của field trong E-form
+    createdName String,
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant ,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+	row Long,					// thứ tự hàng của field (ở hàng bao nhiêu) 
+	col Long,					// thứ tự cột của field (ở cột bao nhiêu)
+    
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity AttachmentFile {		// dữ liệu tài liệu đính kèm
+	id Long,
+	fileName String,			// tên file
+    fileExtension String, 		// định dạng file (word, excel, ...)
+	contentType String,			// mine type của file
+	pathInHandBook String,		// đường dẫn trên cẩm nang thông tin
+	idInFileService String,		// id của file trên hệ thống fileService
+    path String,				// đừng dẫn lưu file
+    fullPath String,			// đường dẫn đầy đủ của file
+    ofice365Path String,		// link trong Ofice 365
+	itemId365 String,			// item id trong Office 365
+	fileSize Long,				// dung lượng file (byte)
+	urlView String,				// đường dẫn xem file trên Office 365
+    description String,			// mô tả của người dùng khi đính kèm file
+	isFolder Boolean,			// cờ đánh dấu có phải là thư mục hay không
+	isMainDoc Boolean,			// cờ đánh dấu có phải là tài liệu chính hay không
+	fileTypeName String,		// tên loại file
+	fileTypeCode String,		// mã loại file
+	parentId Long,				// id của folder cha
+	urlUpload String,			// url upload
+	nextExpectedRanges String,	// độ dài upload
+	signOfFile String,			// biến đánh dấu đây là file ký của file nào
+    createdName String,
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,			
+	isDelete Boolean,			// cờ đánh dấu file có bị xóa đi không
+        
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity FileType {			// loại file đính kèm (đánh dấu file là người dùng tự đính kèm hay là file biểu mẫu)
+	id Long,
+    fileTypeCode String,
+    fileTypeName String,
+    description String,		// mô tả
+    createdName String,
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean,	// cờ đánh dấu là loại file đã bị xóa đi chưa : True: đã xóa, False: chưa xóa
+    
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity AttachmentPermisition {			// quyền sử dụng file và folder
+	id Long,
+	isView Boolean,					// có được xem hay không
+	isEdit Boolean,					// có được sửa hay không
+	isDelete Boolean,				// có được xóa hay không
+	description String,				// mô tả
+    createdName String,
+	createdOrgName String,					// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean,	// cờ đánh dấu là loại file đã bị xóa đi chưa : True: đã xóa, False: chưa xóa
+}
+
+entity ChangeFileHistory {
+	id Long,
+	changeName String,				// tên người sửa file
+	organizationName String,		// tên phòng ban của người chỉnh sửa
+	rankName String,				// tên vai trò của người chỉnh sửa
+	comment String,					// comment thay đổi
+    changeDate Instant,				// thời gian thực hiện thay đổi
+}
+
+entity ReqdataProcessHis{			// lịch sử xử lý yêu cầu
+	id Long,
+    processerName String,			// tên người xử lý
+	organizationName String,		// phòng ban của người xử lý xử lý
+	rankName String,				// vai trò của người xử lý
+    processDate Instant,			// ngày xử lý
+	description String,				// nội dung phản hồi
+    status String,					// trạng thái (đồng ý, từ chối, ...)
+    createDate Instant,				// thời gian tạo lịch sử
+	isChild Boolean,				// có là con hay không
+	isShowCustomer Boolean,			// có show cho khách hàng
+    
+                // phục vụ Saas
+    tennantId Long,			// id đơn vị
+	tennantCode String, 		// mã đơn vị
+    tennantName String,		// tên đơn vị
+}
+
+entity ReqdataChangeHis {		// lịch sử thay đổi yêu cầu
+	id Long,
+    reasonChange String,				// lý do thay đổi
+    version Long,						// version
+    status Long,						// Trạng thái hiện tại			các trạng thái có thể ko sử dụng đến
+    statusName String, 					// Tên trạng thái
+    oldStatus Long, 					// Trạng thái cũ
+    objectSchema TextBlob,				// DDL form (dạng JSON)
+    objectModel TextBlob,				// data form (dạng JSON)
+	changeName String,					// tên người thay đổi
+	organizationName String,			// phòng ban  của người thay đổi
+	rankName String,					// vai trò của người thay đổi
+    createdName String,
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    
+                // phục vụ Saas
+	tennantCode String, 		// mã đơn vị
+    tennantName String,			// tên đơn vị
+}
+    // end Người Làm TT khai báo (Yêu Cầu xử lý) \\
+    
+    
+entity Tennant {
+	id Long,				// khóa chính
+    tennantCode String,	// mã đơn vị khách hàng
+    tennantName String,	// tên đơn vị khách hàng
+    description String,		// mô tả
+    databaseUrl String,
+    databaseSchemaName String,		// tên Schema tương ứng
+    databaseUsermame String,		// userName
+    databasePassword String,		// password
+    databaseDriverClass String		// driver kết nối
+    filePathFolder String,			// thư mục lưu trữ (file đính kèm. biểu mẫu, file tạm , ...)
+    createdId Long,
+    createdName String,
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedId Long,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity CategoryGroup {
+	id Long,			// khóa chính
+    code String,		// mã 
+    name String,		// tên
+    description TextBlob,	// mô tả
+    createdName String, 	// tên  ngưoi tao
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,	// thời gian tao
+    modifiedName String, 	// tên nguời thay doi
+    modifiedDate Instant, 	// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+    
+    //	phục vụ Saas
+    tennantCode String,		// mã đon vị
+    tennantName String,		// tên đon vị
+}
+
+entity CategoryData {
+	id Long,		//	khoa chinh
+    key String,		// gia trị ẩn
+    value String,	// gia trị hiển thị
+    filterValue String,		// giá trị lọc
+    createdName String, 	// tên  ngưoi tao
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,	// thời gian tao
+    modifiedName String, 	// tên nguời thay doi
+    modifiedate Instant, 	// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+    
+        //	phục vụ Saas
+    tennantCode String,		// mã đon vị
+    tennantName String,		// tên đon vị
+}
+entity ThemeConfig{
+	id Long
+	name String
+	primary String
+	secondary String
+	accent String
+	error String
+	info String
+	success String
+	warning String
+	createdDate Instant
+	modifiedDate Instant
+}
+
+
+	// soát xét	
+entity Examine {					//yêu cầu soát xét
+	id Long,
+    content String, // nọi dung ý kiến
+    sendName String,		// tenn người tạo yêu cầu soát xét
+	organizationName String,	// tên đơn vị của người yêu cầu soát xét
+	rankName String,		// tên vai trò của người yêu cầu soát xét
+    sendDate Instant,		// thời gian gửi yêu cầu soát xét
+    receiveName String,		// tên người soát xét    
+    receiveDate Instant,	// thời gian nhận yêu càu soát xét
+	attachFileList String,	// lưu dạng JSONArray (lưu id của thực thể AttachmentFile)
+}
+
+entity ExamineReply {				// phản hồi soát xét
+	id Long,
+    content String, 			// nội dung ý kiến phản hồi
+    sendName String,			// tên người tạo yêu cầu soát xét
+	organizationName String,	// tên đơn vị yêu cầu soát xét
+	rankName String,			// tên vai  trò yêu cầu soát xét
+    sendDate Instant,			// thời gian gửi yêu cầu soát xét
+ 	replyName String,			// tên người phản hồi   
+    replyDate Instant,			// thời gian phản hồi yêu càu soát xét
+	attachFileList String,	// lưu dạng JSONArray (lưu id của thực thể AttachmentFile)
+}
+
+	// Yêu cầu xin ý kiến
+entity Consult {					// Yêu cầu xin ý kiến
+	id Long,
+    content String, // nọi dung ý kiến
+    sendName String,		// tenn người tạo yêu cầu soát xét
+	organizationName String,	// tên đơn vị của người yêu cầu soát xét
+	rankName String,		// tên vai trò của người yêu cầu soát xét
+    sendDate Instant,		// thời gian gửi yêu cầu soát xét
+    receiveName String,		// tên người soát xét    
+    receiveDate Instant,	// thời gian nhận yêu càu soát xét
+	attachFileList String,	// lưu dạng JSONArray (lưu id của thực thể AttachmentFile)
+}
+
+entity ConsultReply {				// Phản hồi yêu cầu xin ý kiến
+	id Long,
+    content String, 			// nội dung ý kiến phản hồi
+    sendName String,			// tên người tạo yêu cầu soát xét
+	organizationName String,	// tên đơn vị yêu cầu soát xét
+	rankName String,			// tên vai  trò yêu cầu soát xét
+    sendDate Instant,			// thời gian gửi yêu cầu soát xét
+ 	replyName String,			// tên người phản hồi   
+    replyDate Instant,			// thời gian phản hồi yêu càu soát xét
+	attachFileList String,	// lưu dạng JSONArray (lưu id của thực thể AttachmentFile)
+}
+
+		// quản lý đóng dấu \\
+entity ManageStampInfo {					// thông tin quản lý đóng dấu
+	id Long,
+	content String,					// nội dung
+	copiesNumber Long,				// số lượng bản
+	stampName String,				// tên con dấu
+	stampCode String,				// mã con dấu
+	stamperName String,				// tên người đóng dấu
+	storageCode String,				// mã lưu trữ
+	storageLocation String,			// nơi lưu trữ
+	storagePosition String,			// vị trí lưu trữ
+	expiredDateStorage Instant,		// ngày hết hạn lưu trữ
+	stampDate Instant, 				// ngày đóng dấu
+	expiredDateReturn Instant,		// thời hạn trả bản gốc
+	returnDate Instant,				// ngày trả bản gốc
+	orgReturnName String,			// tên đơn vị trả
+	receiveDate Instant,			// ngày nhận bản gốc
+	submitSignDate Instant,			// ngày trình ký
+	status String,					// trạng thái
+	name String,					// tên khách hàng
+	email String,					// mail khách hàng
+	phoneNumber String,				// số điện thoại
+	address String,					// địa chỉ liên hệ
+	createdName String, 			// tên  ngưoi tao
+	createdOrgName String,			// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay doi
+    modifiedDate Instant, 			// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity Stamp {								// danh mục đóng dấu
+	id Long,
+	stampName String,				// tên con dấu
+	stampCode String,				// mã con dấu
+	createdName String, 			// tên  ngưoi tao
+	ownerName String,				// tên chủ sở hữu con dấu
+	ownerAddress String,			// địa chỉ đăng kí của chủ sở hữu
+	createdName String, 			// tên  ngưoi tao
+	createdOrgName String,			// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay doi
+    modifiedDate Instant, 			// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+		// Tại liệu đính kèm
+entity AttachmentInStepType {	// loại tài liệu dính kèm trong quá trình xử lý (đánh dấu tại liệu của hành động nào)
+	id Long,
+    typeCode String,		// mã
+    typeName String, 		// tên
+    createdName String, 	// tên  ngưoi tao
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,	// thời gian tao
+    modifiedName String, 	// tên nguời thay doi
+    modifiedate Instant, 	// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity AttachmentInStep {		// tài liệu dính kèm trong quá trình xử lý (đánh dấu tại liệu của hành động nào)
+	id Long,
+    typeName String,		// tên lại tài liệu đính kèm
+    referenceId Long,		// khóa ngoại anh sxạ đến các bảng khác (tùy theo type sẽ ánh xạ đến bảng tương ứng)
+    createdName String, 	// tên  ngưoi tao
+	createdOrgName String,				// tên đơn vị của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,	// thời gian tao
+    modifiedName String, 	// tên nguời thay doi
+    modifiedate Instant, 	// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+		// Thông tin ký \\
+entity SignData {				// thông tin ký phiếu yêu cầu
+	id Long,
+	signName String,			// tên người ký
+	rankName String,			// vai trò của người ký
+	orgName String,				// phòng ban của người ký
+	email String,				// email người ký
+	phoneNumber String,			// sdt người ký\
+	status String,				// trạng thái
+	address String,				// địa chỉ
+	signature TextBlob,			// chữ ký 
+	signDate Instant, 			// thời gian ký
+	signTypeName String,		// tên loại ký (khách hàng ký, CBNV ký)
+	signTypeCode String,		// mã loại ký (khách hàng ký, CBNV ký)
+	numberView Long,			// số lần xem
+	numberPrint Long,			// số lần in
+	numberSign Long,			// số lần ký số
+	numberDownload Long,		// số lần tải
+	createdName String, 		// tên người tạo
+	createdOrgName String,		// tên đơn vị của người tạo
+	createdRankName String,		// tên vai trò của người tạo
+    createdDate Instant,		// thời gian tạo
+    modifiedName String, 		// tên nguời thay doi
+    modifiedate Instant, 		// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+		// OTP
+entity OTP {
+	id Long,
+	OTPCode String,				// mã OTP
+	link String,				// link tương ứng
+	status String,				// trạng thái
+	numberView Long,			// số lần xem
+	numberPrint Long,			// số lần in
+	numberDownload Long,		// số lần tải
+	expiryDate Instant,			// thời hạn sử dụng
+	numberFail Long,			// số lần xác nhận mã sai
+	numberGenerate Long,		// số lần generate lại mã
+	isCustomerSign Boolean,		// cờ đánh dấu khách hàng đã ký hay chưa
+	description String,			// mô tả
+	createdName String, 		// tên người tạo
+	createdOrgName String,		// tên đơn vị của người tạo
+	createdRankName String,		// tên vai trò của người tạo
+    createdDate Instant,		// thời gian tạo
+    modifiedName String, 		// tên nguời thay doi
+    modifiedate Instant, 		// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+		// Trao đổi \\
+entity InformationInExchange {		// tin nhắn trao đổi
+	id Long,
+    content TextBlob,			// nội dung tin nhắn
+    sendName String, 			// tên người gửi tin nhắn
+	organizationName String,	// tên phòng ban người gửi thông tin trao đổi
+	rankName String,			// tên vai trò của người  gửi thông tin trao đổi
+    sendDate Instant, 			// thời gian gửi tin nhắn
+	replyOfId Long,				// id của tin nhắn mà tin nhắn này đang trả lời
+	informationType String,		// Loại tin nhắn
+    isDelete String, 			// cờ đánh dấu tin nhắn có bị xóa hay không
+}
+
+entity TagInExchange {				// thông tin tag trong tin nhắn
+	id Long,
+	tagerName String,				// tên người tag
+	tagerOrg String,				// tên phòng ban người tag
+	tagerRank String,				// tên vai trò người tag
+	taggedName String,				// tên người được tag
+	taggedOrg String,				// tên phòng ban người được tag
+	taggedRank String,				// tên vai trò người được tag
+	requestDataCode String,			// mã của phiếu yêu cầu
+	tagDate Instant,				// thời gian thực hiện tag
+}
+
+		// yêu cầu thu hồi \\
+entity RequestRecall {				// yêu cầu thu hồi
+	id Long,
+	recallCode String,				// mã yêu cầu cần thu hồi
+	reason String,					// lý do yêu cầu thu hồi
+	result String,					// kết quả
+	feedBack String,				// phản hồi
+	requestTime Instant,			// thời gian gửi yêu cầu thu hồi
+	processTime	Instant,			// thời gian xử lý yêu cầu thu hồi
+    createdName String, 			// tên  ngưoi tao
+	createdOrgName String,					// tên phòng ban của người tạo
+	createdRankName String,				// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay đổi
+    modifiedate Instant, 			// thời gian thay đổi
+	isActive Boolean,
+    isDelete Boolean,
+}
+
+
+		// Mail \\
+entity MailLog { 			// lưu log của MailService
+ 	id Long,
+    mailTitle String,		// tiêu đề mail
+    mailContent String,		// nội dung mail
+    description String,		// mô tả
+    receiveEmail String,	// địa chỉ mail nhận 		(danh sách người nhận dạng mảng JSON)
+	ccEmail String,			// địa chỉ mail cc			(danh sách người được cc dạng mảng JSON)
+	bccEmail String,		// địa chỉ mail bcc			(danh sách người được bcc dạng mảng JSON)
+    sendDate Instant,		// thời gian gửi mail
+    result String,			// kết quả gửi mail dạng text
+    isSucess Boolean,		// kết quả gửi mail
+    sendCount Long,			// số lần gửi mail
+    sync Long,				// cờ đánh dấu đã quét chưa
+    createdDate Instant, 	// ngày tạo
+}
+
+entity MailTemplate {				// danh sách biểu mẫu email
+	id Long,
+	mailTemplateName String,	// tên biểu mẫu mail
+	mailTemplateCode String,	// mã biểu mẫu mail
+	receiverDefault String,		// danh sách người nhận mặc định (lưu dạnh JSON ARRAY)
+	ccerDefault String,			// danh sách người nhận mặc định (lưu dạnh JSON ARRAY)
+	bccerDefault String,		// danh sách người nhận mặc định (lưu dạnh JSON ARRAY)
+	subject String,				// tiêu đề mail
+	itemId365 String,			// id của file template email trên Microsoft 365
+	description String,			// mô tả
+	contentFile TextBlob,		// nội dung của file
+	content TextBlob,			// nội dung mail
+	footer TextBlob,			// footer mail
+	pathFile String,			// đường dẫn file trong mail service 
+	mappingInfo TextBlob,		// thông tin mapping (dạng JSON)
+	createdName String, 		// tên  ngưoi tao
+	createdOrgName String,		// tên phòng ban của người tạo
+	createdRankName String,		// tên vai trò của người tạo
+    createdDate Instant,		// thời gian tao
+    modifiedName String, 		// tên nguời thay doi
+    modifiedDate Instant, 		// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+		// Công văn \\
+//các danh mục
+entity PriorityLevel {			// danh mục độ khẩn
+	id Long,
+    priorityCode String,				// mã độ khẩn
+    priorityName String,				// tên đô khẩn
+    priorityValue Long,					// giá trị đô khẩn 
+    description String,					// mô tả 
+    createdName String, 				// tên  ngưoi tao
+	createdOrgName String,				// tên phòng ban của người tạo
+	createdRankName String,				// tên vai trò của người tạo
+    createdDate Instant,				// thời gian tao
+    modifiedName String, 				// tên nguời thay doi
+    modifiedDate Instant, 				// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity SecurityLevel {		// danh mục độ bảo mật
+	id Long,
+    securityCode String,		// mã độ bảo mật
+    securityName String,		// tên đọ bảo mật
+    securityValue Long,			// giá trị dộ mật
+    description String,			// mô tả 
+    createdName String, 		// tên  ngưoi tao
+	createdOrgName String,		// tên phòng ban của người tạo
+	createdRankName String,		// tên vai trò của người tạo
+    createdDate Instant,		// thời gian tao
+    modifiedName String, 		// tên nguời thay doi
+    modifiedDate Instant, 		// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity DocumentType {		// danh mục loại văn bản
+    id Long,
+    docTypeCode String,			// mã loại văn bản
+    docTypeName String,			// ten loại văn bản
+    description String,			// mô tả 
+    createdName String, 		// tên  ngưoi tao
+	createdOrgName String,		// tên phòng ban của người tạo
+	createdRankName String,		// tên vai trò của người tạo
+    createdDate Instant,		// thời gian tao
+    modifiedName String, 		// tên nguời thay doi
+    modifiedDate Instant, 		// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,	
+}
+
+entity OfficialDispatchType {
+	id Long,
+    officialDispatchTypeCode String,		// mã loại công văn đến
+    officialDispatchTypeName String,		// tên loại công văn đến
+    description String,				// mô tả 
+    createdName String, 			// tên  ngưoi tao
+	createdOrgName String,			// tên phòng ban của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay doi
+    modifiedDate Instant, 			// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,	
+}
+
+entity OfficialDispatchStatus {		// Trạng thái của công văn đến (hiện tại phân tích có 3 trạng thái là: Đang soạn, Đã lưu trữ, Đã chuyển xử lý)
+	id Long,
+	statusName String,			// tên trạng thái
+	statusCode String,			// mã trạng thái
+	description String,			// mô tả	
+    createdName String,
+	createdOrgName String,					// tên phòng ban của người tạo
+	createdRankName String,				// tên vai trò của người tạo
+    createdDate Instant,
+    modifiedName String,
+    modifiedDate Instant,
+    isActive Boolean,
+    isDelete Boolean, 			// cờ đánh dấu phiếu yêu cầu có bị xóa không: True: đã xóa, False: chưa xóa
+}
+
+entity DispatchBook {
+	id Long,
+	dispatchBookName String,		// tên sổ công văn
+	dispatchBookCode String,		// mã sổ công văn
+	organizationName String,		// tên đơn vị sở hữu sổ
+	organizationCode String,		// mã đơn vị sở hữu sổ
+	dispatchBookTypeName String,	// tên loại sổ công văn
+	dispatchBookTypeCode String,	// mã loại sổ công văn
+	totalDoc Long,					// tổng số công văn trong sổ
+	description String,				// mô tả
+	createdName String, 			// tên  ngưoi tao
+	createdOrgName String,					// tên phòng ban của người tạo
+	createdRankName String,				// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay doi
+    modifiedDDate Instant, 			// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity DispatchBookType {
+	id Long,
+	dispatchBookTypeName String,	// tên lại sổ công văn
+	dispatchBookTypeCode String,	// mã loại sổ công văn
+	description String,				// mô tả
+	createdName String, 			// tên  ngưoi tao
+	createdOrgName String,			// tên phòng ban của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay doi
+    modifiedDDate Instant, 			// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity OfficialDispatch {						// công văn
+	id	Long							
+	officialDispatchName String			// tên công văn
+	officialDispatchCode String			// số, kí hiệu công văn
+	officialDispatchNumber String		// số công văn
+	officialDispatchTypeName String,	// tên loại công văn
+	officialDispatchTypeCode String,	// mã loại công văn
+	compendium String,					// trích yếu
+	priorityName String,				// tên độ khẩn
+	priorityCode String,				// mã độ khẩn
+	securityName String,				// tên độ mật
+	securityCode String,				// tên độ mật
+	documentTypeName String,			// tên loại văn bản
+	documentTypeCode String,			// mã loại văn bản
+		// đối với công văn đi
+	releaseOrgName String, 				// tên đơn vị phát hành
+	releaseOrgAvatar String,			// avatar đơn vị phát hành
+	releaseDate Instant,				// ngày phát hành
+	composeOrgName String, 				// tên đơn vị soạn thảo
+	composeOrgAvatar String,			// avatar đơn vị soạn thảo
+	signName String,					// tên người ký,
+	signAvatar String,					// avatar người ký,
+	signDate Instant,					// ngày ký
+	outgoingDate Instant,				// ngày đi
+	receiveOrgText String,				// đơn vị nhận dạng text (lưu dạng JSON ARRAY)
+		// đối với công văn đến
+	placeSendName String,				// tên nơi gửi (cơ quan ngoài nào gửi ...)
+	placeSendCode String,				// mã nơi gửi
+	dispatchOfficialDate Instant,		// ngày công văn
+	commingDate Instant,				// ngày đến
+
+	finalScanDocName String,			// tên tệp văn bản
+	intoOutgingBookDate Instant,		// ngày vào sổ
+	numberOfBook String,				// số trong sổ
+	dispatchBookName String,			// tên sổ công văn đi
+	dispatchBookCode String,			// mã sổ công văn đi
+	dispatchBookType String,			// loại sổ công văn	
+	outgoingStatusName String,			// tên trạng thái
+	oldStatus Long,						// trạng thái cũ
+	description String,					// mô tả 
+	createdName String, 				// tên  ngưoi tao
+	createdOrgName String,				// tên phòng ban của người tạo
+	createdRankName String,				// tên vai trò của người tạo
+	createdDate Instant,				// thời gian tao
+	modifiedName String, 				// tên nguời thay doi
+	modifiedDate Instant, 				// thời gian thay đôi
+	isActive Boolean,
+	isDelete Boolean,	
+}
+
+entity OfficialDispatchHis {			// lịch sử công văn
+	id Long,
+	officialDispatchName String,		// tên công văn
+	officialDispatchCode String,  		// mã công văn
+	officialDispatchNumber String,		// số công văn
+	compendium String,					// trích yếu
+	officialDispatchTypeName String,	// tên loại công văn
+	officialDispatchTypeCode String,	// mã loại công văn
+	officialDispatchStatusName String,	// tên trạng thái
+	officialDispatchStatusCode String,	// mã trạng thái
+		// đối với công văn đi
+	releaseOrgName String, 				// tên đơn vị phát hành
+	releaseOrgAvatar String,			// avatar đơn vị phát hành
+	releaseDate Instant,				// ngày phát hành
+	composeOrgName String, 				// tên đơn vị soạn thảo
+	composeOrgAvatar String,			// avatar đơn vị soạn thảo
+		// đối với công văn đến
+	placeSendName String,				// tên nơi gửi (cơ quan ngoài nào gửi ...)
+	placeSendCode String,				// mã nơi gửi
+	placeReceiveName String,			// tên nơi nhận
+	placeReceiveCode String,			// mã nơi nhận
+	executorName String,				// tên người thực hiện
+	executorOrgName String,				// tên phòng ban của người thực hiện
+	executorRankName String,			// tên chức danh của người thực hiện
+	action String,						// hành động
+	content String,						// nội dung
+	description String,					// mô tả 
+    createdName String, 				// tên  ngưoi tao
+	createdOrgName String,				// tên phòng ban của người tạo
+	createdRankName String,				// tên vai trò của người tạo
+    createdDate Instant,				// thời gian tao
+    modifiedName String, 				// tên nguời thay doi
+    modifiedDate Instant, 				// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,	
+}
+
+entity StepProcessDoc {				// chuyển xử lý
+	id Long,
+	processerName String, 			// tên người xử lý chính
+	processerAvatar String,			// avatar người xử lý chính
+	processerEmail String,			// email người xử lý chính
+	involveUserText String,			// người liên quan (dạng text)
+	content String,					// nội dung
+	expireTime Instant,				// hạn xử lý
+	transferTime Instant,			// thời gian chuyển xử lý
+	transferName String,			// người chuyển xử lý
+	transferAvatar String,			// avatar người chuyển xử lý
+	transferEmail String,			// email người chuyển xử lý
+	order Long,						// số thứ tự
+    createdName String, 			// tên  ngưoi tao
+	createdOrgName String,					// tên phòng ban của người tạo
+	createdRankName String,				// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay đổi
+    modifiedDate Instant, 			// thời gian thay đổi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity TransferHandle {				// chuyển xử lý (mới theo prototype)
+	id Long,
+	transferName String,			// tên người chuyển xử lý
+	transferAvatar String,			// avatar người chuyển xử lý
+	transferEmail String,			// email người chuyển xử lý
+	statusName String,				// trạng thái xử lý
+	orgName String,					// tên đơn vị
+	orgCode String,					// mã đơn vị
+	dispatchBookName String,		// tên sổ công văn
+	dispatchBookCode String,		// mã sổ công văn
+	expiredTime Instant,			// hạn xử lý
+	processDate Instant,			// ngày xử lý
+	content String,					// nội dung
+	attachFileList String,			// lưu dạng JSONArray (lưu id của thực thể AttachmentFile)
+	order Long,						// số thứ tự
+    createdName String, 			// tên  ngưoi tao
+	createdOrgName String,					// tên phòng ban của người tạo
+	createdRankName String,				// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay đổi
+    modifiedDate Instant, 			// thời gian thay đổi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity StatusTransferHandle {		// trạng thái xử lý công văn
+	id Long,					
+	statusName String,				// tên trạng thái
+	statusCode String,				// mã trạng thái
+	createdName String, 			// tên  ngưoi tao
+	createdOrgName String,			// tên phòng ban của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay đổi
+    modifiedDate Instant, 			// thời gian thay đổi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity OutOrganization {			// danh mục cơ quan bên ngoài
+	id Long,
+	outOrgName String,				// tên cơ quan bên ngoài
+	outOrgCode String,				// mã cơ quan bên ngoài
+	shortDescription String,		// mô tả ngắn
+	description String,				// mô tả
+    createdName String, 			// tên  ngưoi tao
+	createdOrgName String,					// tên phòng ban của người tạo
+	createdRankName String,				// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay doi
+    modifiedDate Instant, 			// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,	
+}
+
+
+// DuowngTora_20220405: test tách quan hệ n-n: rank - organization
+entity RankInOrg {
+	id Long,
+	rankName String,
+	rankCode String,
+	orgName String,
+	orgCode String,
+	description String,				// mô tả
+    createdName String, 			// tên  ngưoi tao
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay doi
+    modifiedDate Instant, 			// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity DelegateInfo {				// thông tin ủy quyền	
+	id Long,
+	delegateName String,			// tên ủy quyền (người hoặc đơn vị)
+	delegateCode String,
+	delegateId Long,				//(dựa vào type mà join đến UserInfo hay Organization)			
+	delegateToName String,			// tên ủy quyền tới (ủy quyền tới người hay đơn vị nào)
+	delegateToCode String,
+	delegateToId Long,				//(dựa vào type mà join đến UserInfo hay Organization)
+	delegateDocName String,			// Tên Loại tài liệu ủy quyền
+	delegateDocCode String,			// Mã loại tài liệu ủy quyền
+	documentId Long,				// ID loại tài liệu ủy quyền 
+	note String,					// ghi chú ủy quyền
+	delegateTypeName String,		// tên loại ủy quyền
+	delegateTypeCode String,		// mã loại ủy quyền
+	description String,				// mô tả
+    createdName String, 			// tên  ngưoi tao
+	createdOrgName String,					// tên phòng ban của người tạo
+	createdRankName String,				// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay doi
+    modifiedDate Instant, 			// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity DelegateType {				// loại ủy quyền (1: ngừoi, 2: đơn vị)
+	id Long,
+	delegateTypeCode String,		// mã loại ủy quyền
+	delegateTypeName String,		// tên loại ủy quyền
+	description String,				// mô tả
+    createdName String, 			// tên ngưoi tao
+	createdOrgName String,					// tên phòng ban của người tạo
+	createdRankName String,				// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay doi
+    modifiedDate Instant, 			// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity DelegateDocument {
+	id Long, 
+	delegateDocName String,
+	delegateDocCode String,
+	description String,				// mô tả
+    createdName String, 			// tên  ngưoi tao
+	createdOrgName String,					// tên phòng ban của người tạo
+	createdRankName String,				// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay doi
+    modifiedDate Instant, 			// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+		// danh mục mua sắm chung  BP \\
+entity BusinessPartner {						// đối tác kinh doanh
+	id Long,
+	bpName String,					// tên đối tác
+	bpCode String,					// mã đối tác
+	shortName String,				// tên ngắn
+	fullName String,				// tên đầy đủ
+	mst String,						// mã số thuế
+	email String,					// địa chỉ mail
+	fax String,						// số FAX
+	identification String,			// (giấy tờ nhận biết)căn cước công dân/ mã số thuế/ chứng minh thư/ ...
+	issuseDate Instant,				// ngày cấp
+	issuseOrg String,				// đơn vị cấp
+	mobilePhone String,				// sdt di động
+	businessPhones String,			// sdt cố định
+	address String,					// địa chỉ
+	contactAddress String,			// địa chỉ liên hệ
+	bpTypeName String,				// tên loại đối tác
+	bpTypeCode String, 				// mã loại đối tác
+	isSyncFromSAP Boolean			// cờ đánh dấu đối tác có phải được đồng bộ từ SAP hay không
+	description String,				// mô tả
+    createdName String, 			// tên  ngưoi tao
+	createdOrgName String,			// tên phòng ban của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay doi
+    modifiedDate Instant, 			// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+		
+entity BusinessPartnerType {					// danh muc loại đối tác
+	id Long,
+	bpTypeName String,				// tên loại đối tác
+	bpTypeCode String, 				// mã loại đối tác
+	description String,				// mô tả
+    createdName String, 			// tên ngưoi tao
+	createdOrgName String,			// tên phòng ban của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tao
+    modifiedName String, 			// tên nguời thay doi
+    modifiedDate Instant, 			// thời gian thay đôi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+
+	// danh mục mua sắm chung
+entity Vendor {								// danh sách nhà cung cấp (nhà cung ứng)
+	id Long,
+	vendorName String,				// tên nhà cung cấp
+	vendorCode String,				// mã nhà cung cấp
+	vendorType String,				// mô tả loại nhà cung cấp
+	shortName String,				// tên ngắn
+	fullName String,				// tên đầy đủ
+	mst String,						// mã số thuế
+	email String,					// mail liện hệ
+	fax String,						// số FAX
+	sdt String,						// số điện thoại
+	identification String,			// (giấy tờ nhận biết)căn cước công dân/ mã số thuế/ chứng minh thư/ ...
+	issuseDate Instant,				// ngày cấp
+	issuseOrg String,				// đơn vị cấp
+	mobilePhone String,				// sdt di động
+	businessPhones String,			// sdt cố định
+	address String,					// địa chỉ
+	isSyncFromSAP Boolean,			// cờ đánh dấu có phải đồng bộ từ SAP không
+	description String,				// mô tả
+    createdName String, 			// tên người tạo
+	createdOrgName String,			// tên phòng ban của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tạo
+    modifiedName String, 			// tên nguời thay đổi
+    modifiedDate Instant, 			// thời gian thay đổi
+    isActive Boolean,
+    isDelete Boolean,
+}	
+
+entity GoodService {						// danh mục hàng hóa dịch vụ
+	id Long,
+	goodServiceName String,			// tên hàng hóa dịch vụ
+	goodServiceCode String,			// mã hàng hóa dịch vụ
+	shortName String,				// tên ngắn
+	fullName String,				// tên đầy đủ
+	description String,				// mô tả
+	goodServicePrice Double,		// Giá
+	currencyUnitCode String,		// mã đơn vị tính
+    currencyUnitName String,		// tên đơn vị tính
+	isSyncFromSAP Boolean,			// cờ đánh dấu có phải đồng bộ từ SAP không
+	createdName String, 			// tên người tạo
+	createdOrgName String,			// tên phòng ban của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tạo
+    modifiedName String, 			// tên nguời thay đổi
+    modifiedDate Instant, 			// thời gian thay đổi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity GoodServiceType {					// danh mục loại hàng hóa dịch vụ
+	id Long,
+	goodServiceTypeName String,		// tên hàng hóa dịch vụ
+	goodServiceTypeCode String,		// mã hàng hóa dịch vụ
+	description String,				// mô tả
+	createdName String, 			// tên người tạo
+	createdOrgName String,			// tên phòng ban của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tạo
+    modifiedName String, 			// tên nguời thay đổi
+    modifiedDate Instant, 			// thời gian thay đổi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity CurrencyUnit {						// đơn vị tiền tệ
+	id Long,
+	currencyUnitName String,		// tên đơn vị tiền tệ
+	currencyUnitCode String,		// mã đơn vị tiền tệ
+	exchangeValue Double,			// giá trị quy đổi sang VNĐ
+	createdName String, 			// tên người tạo
+	createdOrgName String,			// tên phòng ban của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tạo
+    modifiedName String, 			// tên nguời thay đổi
+    modifiedDate Instant, 			// thời gian thay đổi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity PriceInfo {							// thông tin cung cấp (bảng móc nối GoodService và Vendor)
+	id Long,
+	price Double,					// giá bán
+	retailPrice Double,				// giá bán lẻ
+	currencyUnitName String,		// tên đơn vị tiền tệ
+	currencyUnitCode String,		// mã đơn vị tiền tệ
+	isSyncFromSAP Boolean,			// cờ đánh dấu có phải đồng bộ từ SAP không
+	description String,				// mô tả
+	createdName String, 			// tên người tạo
+	createdOrgName String,			// tên phòng ban của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tạo
+    modifiedName String, 			// tên nguời thay đổi
+    modifiedDate Instant, 			// thời gian thay đổi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+
+	// phân quyền dữ liệu \\
+entity RoleRequest {					// thông tin quyền xem, sửa, xóa đối với loại yêu cầu
+	id Long,
+	isView Boolean,
+	isEdit Boolean,
+	isDelete Boolean,
+	isDownload Boolean,
+	description String,				// mô tả
+	createdName String, 			// tên người tạo
+	createdOrgName String,			// tên phòng ban của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tạo
+    modifiedName String, 			// tên nguời thay đổi
+    modifiedDate Instant, 			// thời gian thay đổi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity RoleOrganization {					// thông tin quyền xem, sửa, xóa đối với những yêu cầu của đơn vị nào
+	id Long,
+	isView Boolean,
+	isEdit Boolean,
+	isDelete Boolean,
+	isDownload Boolean,
+	description String,				// mô tả
+	createdName String, 			// tên người tạo
+	createdOrgName String,			// tên phòng ban của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tạo
+    modifiedName String, 			// tên nguời thay đổi
+    modifiedDate Instant, 			// thời gian thay đổi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+	// entity phục vụ import hàng hóa dịch vụ \\
+entity ConstructionCargo {					// thông tin hàng hóa xây dựng
+	id Long,
+	cargoCode String,				// mã hàng hóa dịch vụ
+	stt Long,						// stt
+	noiDungCongViec String,			// nội dung công việc
+	quyCachKyThuat String,			// quy cách kỹ thuật
+	maHieu String,					// mã hiệu
+	donViTinh String,				// đơn vị tính
+	donGiaHaNoi Double,				// đơn giá hà nội
+	donGiaHaNoiStr String,			// đơn giá hà nội dạng chuỗi (ko có trong file template -> tự thêm)
+	donGiaHCM Double,				// đơn giá hồ chí minh 
+	donGiaHCMStr String,			// đơn giá hồ chí minh dạng chỗi (ko có trong file template -> tự thêm)
+	description String,				// mô tả
+	createdName String, 			// tên người tạo
+	createdOrgName String,			// tên phòng ban của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tạo
+    modifiedName String, 			// tên nguời thay đổi
+    modifiedDate Instant, 			// thời gian thay đổi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+entity MECargo {							// thông tin hàng hóa ME
+	id Long,
+	cargoCode String,				// mã hàng hóa dịch vụ
+	stt Long,						// stt
+	noiDungCongViec String,			// nội dung công việc
+	quyCachKyThuat String,			// quy cách kỹ thuật
+	maHieu String,					// mã hiệu
+	donViTinh String,				// đơn vị tính
+	donGiaVatTuVatLieu Double,		// đơn giá vật tư vật liệu
+	donGiaVatTuVatLieuStr String,	// đơn giá vật tư vật liệu dạng chuỗi(ko có trong file template -> tự thêm)
+	donGiaNhanCong Double,			// đơn giá nhân công
+	donGiaNhanCongStr String,		// đơn giá nhân công dạnh chuỗi (ko có trong file template -> tự thêm)
+	description String,				// mô tả
+	createdName String, 			// tên người tạo
+	createdOrgName String,			// tên phòng ban của người tạo
+	createdRankName String,			// tên vai trò của người tạo
+    createdDate Instant,			// thời gian tạo
+    modifiedName String, 			// tên nguời thay đổi
+    modifiedDate Instant, 			// thời gian thay đổi
+    isActive Boolean,
+    isDelete Boolean,
+}
+
+
+	// quan hệ
+relationship ManyToOne {
+	Organization{orgParent} to Organization
+    //UserInfo to Organization		// 20220405: chuyển thành quan hệ  N-N
+	RequestType{requestGroup} to RequestGroup,
+	Request to RequestType,
+	Request to RequestGroup,
+	Request to Form,
+	//Request to ProcessInfo,		// 20220526: chuyển thành quan hệ N-N
+	FormData to RequestData,
+	RequestData to Request,
+    RequestData to Status{statusRequests},
+	AttachmentFile to FileType,
+	AttachmentFile to RequestData,
+	ReqdataProcessHis to RequestData,
+	ReqdataProcessHis to StepData,
+	ReqdataProcessHis{processer} to UserInfo,
+	ReqdataChangeHis to RequestData,
+	ProcessData to RequestData
+	StepData to ProcessData
+	StepData to RequestData
+	UserInStep to UserInfo
+	StepInProcess to Step
+	FieldData to Field
+	FormData to Form
+	
+	StepInProcess to ProcessInfo,
+	UserInStep to StepInProcess,
+	FieldData to FormData, 
+    FieldData to RequestData,
+    
+    Field to Tennant,
+    Field{created} to UserInfo{createdFields},
+    Field{modified} to UserInfo{modifiedFields},
+    
+    Form to Tennant,
+    Form{created} to UserInfo{createdForms},
+    Form{modified} to UserInfo{modifiedForms},
+       
+    FieldInForm to Tennant,
+    FieldInForm{created} to UserInfo{createdFieldInForms},
+    FieldInForm{modified} to UserInfo{modifiedFieldInForms}, 
+    FieldInForm to Field,
+    FieldInForm to Form,
+    
+    Rank to Tennant,
+    Rank{created} to UserInfo{createdRanks},
+    Rank{modified} to UserInfo{modifiedRanks},
+    
+    Role to Tennant,
+    Role{created} to UserInfo{createdRoles},
+    Role{modified} to UserInfo{modifiedRoles},
+    
+    UserInfo to Tennant,
+    UserInfo{created} to UserInfo{createdUserInfos},
+    UserInfo{modified} to UserInfo{modifiedUserInfos},
+    
+    UserInStep to Tennant,
+    UserInStep{created} to UserInfo{createdUserInSteps},
+    UserInStep{modified} to UserInfo{modifiedUserInSteps},
+    
+    StepInProcess to Tennant,
+    StepInProcess{created} to UserInfo{createdStepInProcesses},
+    StepInProcess{modified} to UserInfo{modifiedStepInProcesses},
+    StepInProcess{rank} to Rank,
+    StepInProcess{organization} to Organization
+    
+    Step to Tennant,
+    Step{created} to UserInfo{createdSteps},
+    Step{modified} to UserInfo{modifiedSteps},
+	Step{rank} to Rank,
+    Step{organization} to Organization,
+    
+    ProcessInfo to Tennant,
+    ProcessInfo{created} to UserInfo{createdProcessInfos},
+    ProcessInfo{modified} to UserInfo{modifiedProcessInfos},
+    
+    TemplateForm to Tennant,
+    TemplateForm{created} to UserInfo{createdTemplateForms},
+    TemplateForm{modified} to UserInfo{modifiedTemplateForms},
+
+    
+    Request to Tennant,
+    Request{created} to UserInfo{createdRequests},
+    Request{modified} to UserInfo{modifiedRequests},
+    
+    RequestType to Tennant,
+    RequestType{created} to UserInfo{createdRequestTypes},
+    RequestType{modified} to UserInfo{modifiedRequestTypes},
+    
+    RequestGroup to Tennant,
+    RequestGroup{created} to UserInfo{createdRequestGroups},
+    RequestGroup{modified} to UserInfo{modifiedRequestGroups},
+    
+    ProcessData to Tennant,
+    ProcessData{created} to UserInfo{createdProcessDatas},
+    ProcessData{modified} to UserInfo{modifiedProcessDatas},
+    
+    StepData to Tennant,
+    StepData{created} to UserInfo{createdStepDatas},
+    StepData{modified} to UserInfo{modifiedStepDatas},
+	StepData{stepInProcess} to StepInProcess,
+	StepData{rank} to Rank,
+    //StepData{nextStep} to StepData, 	// quan hệ này thật ra là 1-1
+    //StepData{previousStep} to StepData,	// quan hệ này thật ra là 1-1
+    
+    RequestData to Tennant,
+	RequestData to RequestType,
+	RequestData to RequestGroup,
+	RequestData to Organization,
+    RequestData{created} to UserInfo{createdRequestDatas},
+    RequestData{modified} to UserInfo{modifiedRequestDatas},
+    RequestData to Status{statusRequests},
+	RequestData{subStatus} to Status{subStatusRequests},
+	RequestData{reqDataConcerned} to RequestData,		// phiếu liên quan
+	RequestData{approver} to UserInfo{approvedRequestDatas},
+	RequestData{revoker} to UserInfo{revokedRequestDatas},
+    
+    Status to Tennant,
+    Status{created} to UserInfo{createdStatus},
+    Status{modified} to UserInfo{modifiedStatus},
+    
+    FormData to Tennant,
+    FormData{created} to UserInfo{createdFormDatas},
+    FormData{modified} to UserInfo{modifiedFormDatas},
+    
+    FieldData to Tennant,
+    FieldData{created} to UserInfo{createdFieldDatas},
+    FieldData{modified} to UserInfo{modifiedFieldDatas},
+    FieldData to FieldInForm
+    
+    AttachmentFile to Tennant,
+    AttachmentFile{created} to UserInfo{createdAttachmentFiles},
+    AttachmentFile{modified} to UserInfo{modifiedAttachmentFiles},
+    AttachmentFile to TemplateForm,
+	AttachmentFile to ReqdataProcessHis,
+//duowngTora_20220420	AttachmentFile{parent} to AttachmentFile,
+    
+    FileType to Tennant,
+    FileType{created} to UserInfo{createdFileTypes},
+    FileType{modified} to UserInfo{modifiedFileTypes},
+    
+    ReqdataChangeHis to Tennant,
+    ReqdataChangeHis{created} to UserInfo{createdReqdataChangeHis},
+    ReqdataChangeHis{modified} to UserInfo{modifiedReqdataChangeHis},
+  	
+    
+    // dữ liệu danh muc
+    CategoryData to CategoryGroup
+    CategoryData to Tennant,
+    CategoryData{created} to UserInfo{createdCategoryDatas},
+    CategoryData{modified} to UserInfo{modifiedCategoryDatas}, 
+    CategoryGroup to Tennant,
+    CategoryGroup{created} to UserInfo{createdCategoryGroups},
+    CategoryGroup{modified} to UserInfo{modifiedCategoryGroups}, 
+	CategoryGroup{parent} to CategoryGroup{children}
+    
+    
+    // 	soát xét
+	Examine to StepData					// yêu cầu soát xét ở bước nào
+    Examine{sender} to UserInfo,
+    Examine{receiver} to  UserInfo,
+    ExamineReply{sender} to UserInfo,
+    ExamineReply{replier} to UserInfo,
+    ExamineReply to Examine
+	
+	// Yêu cầu xin ý kiến
+	Consult to StepData					// yêu cầu soát xét ở bước nào
+    Consult{sender} to UserInfo,
+    Consult{receiver} to  UserInfo,
+    ConsultReply{sender} to UserInfo,
+    ConsultReply{replier} to UserInfo,
+    ConsultReply to Consult
+    
+    // tài liệu dính kèm theo hành động (vd : đính kèm khi từ chói , đính kèm khi yêu cầu soát xét, ... )
+    AttachmentInStepType{creater} to UserInfo,
+    AttachmentInStepType{modifier} to UserInfo,
+    
+    AttachmentInStep to AttachmentInStepType
+    AttachmentInStep{creater} to UserInfo,
+    AttachmentInStep{modifier} to UserInfo,
+    AttachmentInStep to StepData
+    
+    // trao đổi
+    InformationInExchange{sender} to UserInfo,
+    InformationInExchange to RequestData
+//    InformationInExchange{reply} to InformationInExchange	// mội tin nhắn có thể được trả lời bởi nhiều tin nahứn kahscscsc
+	
+	// thông tin tag (gắn thẻ)
+	TagInExchange{tager} to UserInfo,
+	TagInExchange{tagged} to UserInfo,
+	TagInExchange to RequestData,
+	TagInExchange to InformationInExchange,
+	
+	
+	// yêu cầu thu hồi
+	RequestRecall{recaller} to UserInfo,				// người yêu cầu thu hồi
+	RequestRecall{processer} to UserInfo,			// người xử lý yêu cầu thu hồi
+	RequestRecall to RequestData,					// yêu cầu thu hồi của Phiếu Yêu Cầu nào
+	RequestRecall to StepData,						// yêu cầu thu hồi khi đang ở bươc quy trình nào ?	
+		
+    // Công văn
+    	// danh mục
+    PriorityLevel{creater} to UserInfo,
+    PriorityLevel{modifier} to UserInfo,
+    
+    SecurityLevel{creater} to UserInfo,
+    SecurityLevel{modifier} to UserInfo,
+    
+    DocumentType{creater} to UserInfo,
+    DocumentType{modifier} to UserInfo,
+    
+	OfficialDispatchType{creater} to UserInfo,
+	OfficialDispatchType{modifier} to UserInfo,
+	
+	DispatchBookType{creater} to UserInfo,
+	DispatchBookType{modifier} to UserInfo,
+	
+	OfficialDispatchStatus{creater} to UserInfo,
+	OfficialDispatchStatus{modifier} to UserInfo,
+	
+		// công văn
+	OfficialDispatch to DispatchBook
+	OfficialDispatch{releaseOrg} to Organization,		// đơn vị phát hành	(đối với công văn đi)
+	OfficialDispatch{composeOrg} to Organization,		// đơn vị soạn thảo (đối với công văn đi)
+	OfficialDispatch{ownerOrg} to Organization,			// của đơn vị nào
+	OfficialDispatch{signer} to UserInfo,				// người ký			(đối với công văn đi)
+	OfficialDispatch to OfficialDispatchType,			// loại công văn
+	OfficialDispatch to DocumentType,					// loại văn bản
+	OfficialDispatch to PriorityLevel,					// độ khẩn
+	OfficialDispatch to SecurityLevel,					// độ mật
+	OfficialDispatch to OfficialDispatchStatus,			// trạng thái
+	AttachmentFile to OfficialDispatch,					// file tài liệu (bản final scan)
+	OfficialDispatch{creater} to UserInfo,
+	OfficialDispatch{modifier} to UserInfo,
+	
+	OfficialDispatchHis to OfficialDispatch,			// Lịch sử của công văn
+	OfficialDispatchHis{creater} to UserInfo,
+	OfficialDispatchHis{modifier} to UserInfo,
+	
+	OfficialDispatch to OutOrganization,				// đơn vị gửi đến		(đối với công văn đến)
+	StepProcessDoc to OfficialDispatch,					// các chuyển xử lý 	(đối với công văn đến)
+	AttachmentFile to StepProcessDoc,					// file đính kèm trên 'chuyển xử lý' (đối với công văn đến)
+		// sổ công văn
+	DispatchBook to Organization,
+	DispatchBook{creater} to UserInfo,
+	DispatchBook{modifier} to UserInfo,
+			// chuyển xử lý (mới theo prototype)
+	TransferHandle to StatusTransferHandle,				// trạng thái xử lý công văn
+	TransferHandle to Organization,						// đơn vị
+	TransferHandle to DispatchBook,						// sổ công văn
+	TransferHandle to StepData,
+	TransferHandle{transfer} to UserInfo,				// người chuyển xử lý
+	TransferHandle{creater} to UserInfo,
+	TransferHandle{modifier} to UserInfo,
+	
+	
+	RankInOrg to Rank,
+	RankInOrg to Organization,
+	
+			// Ủy quyền \\
+	DelegateInfo{creater} to UserInfo,
+	DelegateInfo{modifier} to UserInfo,
+	DelegateInfo{delegater} to UserInfo,
+	DelegateInfo{delegated} to UserInfo,
+	DelegateInfo to DelegateType,
+	DelegateInfo{docDelegate} to Request,
+	DelegateInfo to DelegateDocument,
+	
+			// thông tin chũ ký \\
+	SignatureInfomation to UserInfo,
+	
+			// Quyền truy cấp vào file or folder \\
+	AttachmentPermisition to UserInfo,
+	AttachmentPermisition to AttachmentFile,
+	AttachmentPermisition{created} to UserInfo{createdAttachmentPermision},
+	AttachmentPermisition{modified} to UserInfo{modifiedAttachmentPermision},
+	
+			// lịch sử thay đổi file \\
+	ChangeFileHistory to AttachmentFile,
+	
+			// biểu mẫu mail \\
+	//MailTemplate{fileTemplate} to AttachmentFile
+	//Status to MailTemplate,							// một trạng thái sẽ có 1 biểu mẫu mail, một biểu mẫu mail có thể được dùng cho nhiều trạng thái
+	StepInProcess to MailTemplate,
+	StepInProcess{mailTemplateCustomer} to MailTemplate{stepInProMailTemplateCustomers},
+	Step to MailTemplate,
+	Step{mailTemplateCustomer} to MailTemplate{stepMailTemplateCustomers},
+	StepData to MailTemplate,
+	StepData{mailTemplateCustomer} to MailTemplate{stepDataMailTemplateCustomers},
+	AttachmentFile to MailTemplate,						// file đính kèm mặc định trong mail
+	
+			// OTP \\
+	OTP to RequestData,								// một mã OTP sẽ thuộc 1 phiếu yêu cầu, 1 phiếu yêu cầu có thể có nhiều mã OTP
+	OTP to SignData,								// OTP này thuộc khách hàng nào
+	
+			// thông tin ký SignData \\
+	SignData to RequestData,
+	SignData to SignatureInfomation,
+	SignData to UserInfo,
+	
+			// thông tin đóng dấu \\
+	ManageStampInfo to RequestData,
+	AttachmentFile to ManageStampInfo,				// file đính kèm của thông tin đóng dấu
+	//ManageStampInfo{stamper} to UserInfo,			// người đóng dấu
+	ManageStampInfo to Stamp,						// thông tin con dấu
+	//ManageStampInfo{orgStorage} to Organization,	// thông tin đơn vị lưu		// đổi sang quan hệ n-n do có thể lưu trữ ở nhiều đơn vị
+	ManageStampInfo{orgReturn} to Organization,		// thông tin đơn vị trả
+	ManageStampInfo{creater} to UserInfo,
+	ManageStampInfo{modifier} to UserInfo,
+	
+		// danh mục mua sắm chung BP (Business Partner) \\
+	BusinessPartner to BusinessPartnerType,		// đối tác sẽ phải thuộc 1 loại đối tác nhất định
+	BusinessPartner{creater} to UserInfo,
+	BusinessPartner{modifier} to UserInfo,
+			// loại đối tác
+	BusinessPartnerType{creater} to UserInfo,
+	BusinessPartnerType{modifier} to UserInfo,
+			// nhà cung cấp (nhà cung ứng)
+	PriceInfo to Vendor,
+	Vendor{creater} to UserInfo,
+	Vendor{modifier} to UserInfo,
+			// hàng hóa dịch vụ
+	PriceInfo to GoodService,
+	GoodService to CurrencyUnit,
+	GoodService to GoodServiceType,
+	GoodService{creater} to UserInfo,
+	GoodService{modifier} to UserInfo,
+
+	PriceInfo to CurrencyUnit,
+	PriceInfo{creater} to UserInfo,
+	PriceInfo{modifier} to UserInfo,
+	
+	GoodServiceType{creater} to UserInfo,
+	GoodServiceType{modifier} to UserInfo,
+	CurrencyUnit{creater} to UserInfo,
+	CurrencyUnit{modifier} to UserInfo,
+	
+	
+			// kết quả xử lý của bước trong quy trình 
+	ResultOfStep{excutor} to UserInfo,				// kết quả xử lý của người nào
+	ResultOfStep to StepData,						// kết quả của bước nào
+	ResultOfStep to Tennant,
+	
+	
+			// phân quyền dữ liệu \\
+	RoleRequest{created} to UserInfo,
+	RoleRequest{modified} to UserInfo,				
+	RoleRequest to Role,							// thông tin quyền của quyền nào
+	RoleRequest to Request,							//	thông tin quyền cho những loại yêu cầu nào
+	
+	RoleOrganization{created} to UserInfo,
+	RoleOrganization{modified} to UserInfo,	
+	RoleOrganization to Role,						// thông tin quyền của quyền nào
+	RoleOrganization to Organization,				// thông tin quyền của nhưng phòng ban nào (được xem, chỉnh sửa, xóa, tải nhưng phiếu yêu cầu của những đơn vị nào)
+}
+
+relationship ManyToMany {
+	Form to Field,
+	UserInfo to Role,
+	UserInfo to Rank,
+	Request to TemplateForm,
+	
+	// một biểu mẫu sẽ được sử dụng cho nhiều đơn vị (một đơn vị cũng có thể sử dụng nhiều biểu mẫu)
+	TemplateForm to Organization,
+	
+	
+	//Organization to Rank,
+	UserInfo to Organization,
+	
+		// quy trình vs đơn vị (quy trình được áp dụng cho những đơn vị nào)
+	ProcessInfo to Organization,
+	
+		// phiếu yêu cầu(requestData) chia sẻ với ai
+	RequestData to UserInfo,
+		
+		// một bước xử lý sẽ có thể chọn 1 hoặc hiều người xử lý cuối cùng
+	StepData to UserInfo,
+	
+		// một user có thể thuộc nhiều nhóm, 1 nhóm cũng có nhiều user
+	UserGroup to UserInfo,
+	
+		// một nhóm người dùng có thể có nhiều quyền, 1 quyền cũng có thể được sử dụng cho nhiều nhóm người dùng
+	UserGroup to Role,
+	
+		// phiếu yêu cầu và quy trình (một phiếu khi cấu hình có thể chọn sử dụng 1 hoặc hiều quy trình, một quy trình có thể được cấu hình cho 1 hoặc nhiều phiếu)
+	Request to ProcessInfo,		
+	
+		// quyền đọc (xem) công văn (công văn vs người dùng, 1 công văn chia sẻ cho nhiều người, 1 người được chia sẻ nhiều công văn)
+	OfficialDispatch{offDispatchUserRead} to UserInfo{offDispatchUserRead},
+	
+		// sổ công văn vs đơn vị (nhưng đơn vị vào được xem sổ công văn)
+	DispatchBook{dispatchBookOrg} to Organization{dispatchBookOrg}
+	
+		// biểu mẫu mail (biểu mẫu mail được áp dụng cho những đơn vị nào)
+	MailTemplate to Organization,
+		// biểu mẫu mail (biểu mẫu mail sẽ được áp dụng cho những quy trình nào)
+	MailTemplate to ProcessInfo,
+		
+		// thông tin đóng dấu được lưu ở những đơn vị nào (một thông tin đóng dấu lưu ở nhiều đơn vị, một đơn vị có thể lưu nhiều thông tin đóng dấu)
+	ManageStampInfo{orgStorage} to Organization{orgStorage},
+
+		// quyền được sử dụng với những loại văn bản nào
+	//Role to Request,		// tách thành 2 quan hệ n-1
+	
+		// chuyển xử lý công văn (người nhận, chuyển xử lý có nhiều người nhận, 1 người nhận được nhiều chuyển xử lý)
+	TransferHandle{receiversHandle} to UserInfo{receiversHandle}
+	
+		// quyền được sử dụng những tính năng nào (1 quyền có thể sử dụng nhiều tính năng, 1 tính năng có thể được dùng bởi nhiều quyền)
+	Role to Feature
+}
+
+relationship OneToOne{
+	StepData{nextStep} to StepData{previousStep},
+	
+	//ManageStampInfo to RequestData,						// một phiếu có 1 thông tin đóng dấu riêng
+	
+	UserInfo{leader} to Organization{leader},							// 1 phòng có 1 trưởng phòng ban, 1 người chỉ có thể là trưởng phòng của 1 phòng ban
+}
+
+
+paginate * with pagination
+dto * with mapstruct
+service * with serviceClass
+search * with elasticsearch
+service * with serviceImpl
