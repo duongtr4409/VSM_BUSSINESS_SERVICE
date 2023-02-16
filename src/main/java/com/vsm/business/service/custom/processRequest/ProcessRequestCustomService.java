@@ -891,7 +891,7 @@ public class ProcessRequestCustomService {
             this.signUtils.revertFilePrimary(requestDataId);
 
             // trả lại -> reset lại thông tin trong signData + không xóa OTP
-            this.resetDataCustomer(requestDataId, false);
+            this.resetDataCustomer(requestDataId);
 
             return true;
         };
@@ -1921,7 +1921,7 @@ public class ProcessRequestCustomService {
             this.signUtils.revertFilePrimary(requestDataId);
 
             // khách hàng trả lại -> reset lại thông tin trong signData
-            this.resetDataCustomer(requestDataId, true);
+            this.resetDataCustomer(requestDataId);
 
             return true;
         };
@@ -1930,10 +1930,9 @@ public class ProcessRequestCustomService {
     /**
      * Hàm thực hiện reset lại thông tin các object của khách hàng (xóa mã OTP, reset lại số lần xem, lần ký, lần tải, ... trong signData)
      * @param requestDataId : id của phiếu
-     * @param isCustomer    : cờ xem có phải khách hàng hay không. true: khách hàng | false: không phải (nếu là khách hàng thì xóa thông tin otp)
      */
     @Transactional
-    private void resetDataCustomer(Long requestDataId, boolean isCustomer){
+    private void resetDataCustomer(Long requestDataId){
         this.signDataRepository.findAllByRequestDataId(requestDataId).forEach(ele -> {
             ele.setNumberSign(0L);
             ele.setNumberView(0L);
@@ -1942,10 +1941,8 @@ public class ProcessRequestCustomService {
             ele.setStatus(null);
             this.signDataRepository.save(ele);
         });
-        if(isCustomer){
-            List<Long> otpIds = this.otpRepository.findAllByRequestDataId(requestDataId).stream().map(ele -> ele.getId()).collect(Collectors.toList());
-            this.otpRepository.deleteAllById(otpIds);
-        }
+        List<Long> otpIds = this.otpRepository.findAllByRequestDataId(requestDataId).stream().map(ele -> ele.getId()).collect(Collectors.toList());
+        this.otpRepository.deleteAllById(otpIds);
     }
 
 
