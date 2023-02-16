@@ -1479,7 +1479,7 @@ public class ProcessRequestCustomService {
             if (currentStepData == null)
                 return false;
 
-            return !this.signDataRepository.findAllByRequestDataId(requestDataId).stream().allMatch(ele -> ele.getNumberSign() != null &&  ele.getNumberSign() > 0);
+            return !this.signDataRepository.findAllByRequestDataId(requestDataId).stream().anyMatch(ele -> ele.getNumberSign() != null &&  ele.getNumberSign() > 0);
         }catch (Exception e){
             log.error("{}", e);
             return false;
