@@ -1402,6 +1402,9 @@ public class ProcessRequestCustomService {
             // Khi người tạo thu hồi phiếu thành công -> revert lại các file tài liệu chính đã ẩn đi khi ký thành công
             this.signUtils.revertFilePrimary(requestDataId);
 
+            // người tạo trả lại -> reset lại thông tin trong signData
+            this.resetDataCustomer(requestDataId);
+
             return true;
         };
     }
