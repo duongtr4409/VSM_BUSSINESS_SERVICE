@@ -8,6 +8,7 @@ import com.vsm.business.repository.OrganizationRepository;
 import com.vsm.business.repository.RankInOrgRepository;
 import com.vsm.business.repository.RankRepository;
 import com.vsm.business.repository.search.RankSearchRepository;
+import com.vsm.business.service.dto.OrganizationDTO;
 import com.vsm.business.service.dto.RankDTO;
 import com.vsm.business.service.dto.StepDTO;
 import com.vsm.business.service.mapper.RankMapper;
@@ -90,6 +91,22 @@ public class RankCustomService {
     public List<RankDTO>findAllByOrganizationId(Long organizationId){
         List<RankDTO> result = rankInOrgCustomService.findAllByOrganizaion(organizationId).stream().map((ele) -> {return ele.getRank();}).collect(Collectors.toList()).stream().filter((ele) -> ele != null).collect(Collectors.toList());
         log.debug("RankCustomService: findAllByOrganizationId({}) {}", organizationId, result);
+        return result;
+    }
+
+    public List<OrganizationDTO> findAllOrgByRankInOrg(Long rankId){
+        List<OrganizationDTO> result = this.rankInOrgRepository.findAllByRankId(rankId).stream().map(ele -> {
+            OrganizationDTO organizationDTO = new OrganizationDTO();
+            if(ele.getOrganization() != null){
+                try {
+                    this.objectUtils.coppySimpleType(ele.getOrganization(), organizationDTO, OrganizationDTO.class);
+                } catch (IllegalAccessException e) {
+                    log.error("{}", e);
+                }
+            }
+            return organizationDTO;
+        }).collect(Collectors.toList());
+        log.debug("RankCustomService: findAllOrgByRankInOrg({}) {}", rankId, result);
         return result;
     }
 

@@ -14,6 +14,7 @@ import com.vsm.business.service.RankService;
 import com.vsm.business.service.custom.RankCustomService;
 import com.vsm.business.service.custom.search.service.RankSearchService;
 import com.vsm.business.service.custom.search.service.bo.ISearchResponseDTO;
+import com.vsm.business.service.dto.OrganizationDTO;
 import com.vsm.business.service.dto.RankDTO;
 import com.vsm.business.utils.GenerateCodeUtils;
 
@@ -84,18 +85,17 @@ public class RankCustomRest {
     @Autowired
     private GenerateCodeUtils generateCodeUtils;
     public String generateCode(RankDTO rankDTO){
-        if(this.rankDTOMap == null || this.rankDTOMap.size() == 0) this.loadRank();
+        if(this.rankDTOMap == null ||  this.rankDTOMap.size() == 0) this.loadRank();
         try {
             String code = this.generateCodeUtils.generateCode(rankDTO.getRankName(), this.rankDTOMap, RankDTO.class, "getRankCode");
+            rankDTO.setRankCode(code);
+            this.rankDTOMap.put(code, rankDTO);
 
             this.rankDTOMap = null;
 
             return code;
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             log.error("{}", e);
-
-            this.rankDTOMap = null;
-
             return null;
         }
 
@@ -287,7 +287,14 @@ public class RankCustomRest {
     @GetMapping("/organization/_all/{organiztionId}/rank")
     public ResponseEntity<IResponseMessage> getAllByOrganizaionId(@PathVariable("organiztionId") Long organiztionId){
         List<RankDTO> result = rankCustomService.findAllByOrganizationId(organiztionId);
-        log.debug("StepCustomRest: saveAll({}): {}", organiztionId, result);
+        log.debug("StepCustomRest: getAllByOrganizaionId({}): {}", organiztionId, result);
+        return ResponseEntity.ok().body(new LoadedMessage(result));
+    }
+
+    @GetMapping("/organization/_all_rank_in_org/{rankId}/rank")
+    public ResponseEntity<IResponseMessage> getAllOrganizaionByRankInOrg(@PathVariable("rankId") Long rankId){
+        List<OrganizationDTO> result = rankCustomService.findAllOrgByRankInOrg(rankId);
+        log.debug("StepCustomRest: getAllOrganizaionByRankInOrg({}): {}", rankId, result);
         return ResponseEntity.ok().body(new LoadedMessage(result));
     }
 
