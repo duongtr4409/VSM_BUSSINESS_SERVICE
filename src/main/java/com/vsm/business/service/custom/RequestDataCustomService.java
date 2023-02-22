@@ -836,6 +836,7 @@ public class RequestDataCustomService {
                     requestDataCopy.setSignData(new HashSet<>());
                     requestDataCopy.setOTPS(new HashSet<>());
                     requestDataCopy.setTagInExchanges(new HashSet<>());
+                    requestDataCopy.setTennantCode(requestDataId.toString());           // dùng trường tennantCode để đánh dấu phiếu này coppy từ phiếu nào
                     requestDataCopy = this.requestDataRepository.save(requestDataCopy);
 
                     requestDataIdDelete = requestDataCopy.getId();
