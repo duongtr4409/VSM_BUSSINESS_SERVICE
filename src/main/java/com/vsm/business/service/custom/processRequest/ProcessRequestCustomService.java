@@ -467,6 +467,7 @@ public class ProcessRequestCustomService {
                         mailInfoDTOOneCustomer.setEmailAddressTo(emailAddressTo);
                         mailInfoDTOOneCustomer.setAddFile(false);
                         mailInfoDTOOneCustomer.setAddOTP(true);
+                        mailInfoDTOOneCustomer.setRequestDataId(requestDataId);
                         this.mailCustomService.sendMailWithTemplate365ToCustomer(mailInfoDTOOneCustomer, requestDataId);
                     }catch (Exception ex){
                         log.error("{}", ex);

@@ -837,7 +837,7 @@ public class RequestDataCustomService {
                     requestDataCopy.setOTPS(new HashSet<>());
                     requestDataCopy.setTagInExchanges(new HashSet<>());
                     requestDataCopy.setTennantCode(requestDataId.toString());           // dùng trường tennantCode để đánh dấu phiếu này coppy từ phiếu nào
-                    requestDataCopy = this.requestDataRepository.save(requestDataCopy);
+                    requestDataCopy = requestDataRepository.save(requestDataCopy);
 
                     requestDataIdDelete = requestDataCopy.getId();
 
@@ -972,8 +972,9 @@ public class RequestDataCustomService {
                     reqdataProcessHis.setProcesser(creater);
                     reqdataProcessHis.setProcesserName(creater.getFullName());
                     reqdataProcessHis.setProcessDate(Instant.now());
-                    reqdataProcessHis.setStatus("Đang Soạn");       // text cho giống với frontend
+                    reqdataProcessHis.setStatus(status_DANGSOAN.getStatusName());
                     reqdataProcessHis.setIsChild(false);
+                    reqdataProcessHis.setIsShowCustomer(false);
                     reqdataProcessHis.setDescription("Soạn thảo");  // text cho giống với frontend
                     this.reqdataProcessHisRepository.save(reqdataProcessHis);
 
