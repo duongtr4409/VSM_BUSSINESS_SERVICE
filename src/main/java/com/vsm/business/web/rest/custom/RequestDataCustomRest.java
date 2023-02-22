@@ -21,7 +21,6 @@ import com.vsm.business.service.dto.RequestDataDTO;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -507,19 +506,6 @@ public class RequestDataCustomRest {
             return ResponseEntity.ok().body(new FailCreateMessage(requestDataDTO));
         }
         return ResponseEntity.ok().body(new CreatedMessage(result));
-    }
-
-    @PostMapping("/copy/request-data")
-    public ResponseEntity<IResponseMessage> copyRequestData(@RequestBody List<Long> requestDataIds) throws Exception {
-
-        // kiểm tra quyền copy\\
-        List<Long> requestIdsNotPerMission = this.requestDataRepository.checkPermissionCopyRequestData(requestDataIds, this.userUtils.getCurrentUser().getId());
-        if(requestIdsNotPerMission != null && !requestIdsNotPerMission.isEmpty())
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, this.authenticateUtils.NOT_AUTHORITY_MESS);
-
-        log.debug("RequestDataCustomRest: copyRequestData({}): {}", requestDataIds);
-        Map<Long, Boolean> result = this.requestDataCustomService.copyRequestDatas(requestDataIds, this.userUtils.getCurrentUser().getId());
-        return ResponseEntity.ok().body(new LoadedMessage(result));
     }
 
     /**

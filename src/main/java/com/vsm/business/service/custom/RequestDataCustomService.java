@@ -769,7 +769,7 @@ public class RequestDataCustomService {
         return result;
     }
 
-//    @Transactional
+    //    @Transactional
     public Map<Long, Boolean> copyRequestDatas(List<Long> requestDataIds, Long userId) throws Exception {
 
         Map<Long, Boolean> result = new HashMap<>();
@@ -2013,7 +2013,7 @@ public class RequestDataCustomService {
             if(stepDataSet.get(indexStepDataFirst).getProcessingTerm() != null && stepDataSet.get(indexStepDataFirst).getProcessingTerm() > 0){
                 Double secondPlus = (stepDataSet.get(indexStepDataFirst).getProcessingTerm() * 3600);           // do chuyển từ Hours -> second => cần nhân thêm 60*60
                 stepDataSet.get(indexStepDataFirst).setProcessingTermTime(Instant.now().plus(secondPlus.longValue(), ChronoUnit.SECONDS));
-                    // thêm người tạo vào quy trình
+                // thêm người tạo vào quy trình
                 if(stepDataSet.get(indexStepDataFirst).getUserInfos() != null)
                     stepDataSet.get(indexStepDataFirst).getUserInfos().add(userInfo);
                 else {

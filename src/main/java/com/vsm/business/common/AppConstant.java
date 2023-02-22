@@ -30,9 +30,4 @@ public interface AppConstant {
     public interface FileConstant {
         public static final String UNSAFE_SYMBOL_REPLACEMENT = "_";
     }
-
-    public interface RequestGroupConstant {
-        public static final String CONG_VAN_DEN = "Công văn đến";
-        public static final String TO_TRINH = "Tờ trình";
-    }
 }

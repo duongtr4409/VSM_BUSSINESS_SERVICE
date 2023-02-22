@@ -1,7 +1,5 @@
 package com.vsm.business.utils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
@@ -13,8 +11,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class ObjectUtils {
-
-    private final Logger log = LoggerFactory.getLogger(ObjectUtils.class);
 
     /**
      * Hàm thực hiện coppy thuộc tính từ object nguồn sang object đích
@@ -272,32 +268,4 @@ public class ObjectUtils {
 
         return (T)target;
     }
-
-    /**
-     * Hàm thực hiện coppy các trường dữ liệu map theo tên từ Object source sang cho Object target -> trả về kiểu dữ liệu T
-     * @param source    : Object nguồn
-     * @param target    : Object đích
-     * @param tclass    : kiểu dữ liệu cần trả ra
-     * @param mapName   : dánh sách map tên các trường cần copy từ source sang target
-     * @return
-     * @param <T>
-     * @throws IllegalAccessException
-     */
-    public <T> T copyFieldOfObjectWithName(Object source, Object target, Map<String, String> mapName ,Class<T> tclass) throws IllegalAccessException {
-        Class<?> classSource = source.getClass();
-        Class<?> classTarget = target.getClass();
-        for(Map.Entry<String, String> enttry : mapName.entrySet()){
-            try {
-                Field fieldOfSource = classSource.getDeclaredField(enttry.getValue());
-                fieldOfSource.setAccessible(true);
-                Field fieldOfTarget = classTarget.getDeclaredField(enttry.getKey());
-                fieldOfTarget.setAccessible(true);
-                fieldOfTarget.set(target, fieldOfSource.get(source));
-            } catch (Exception e) {
-                log.error("{}", e);
-            }
-        }
-        return (T) target;
-    }
-
 }
