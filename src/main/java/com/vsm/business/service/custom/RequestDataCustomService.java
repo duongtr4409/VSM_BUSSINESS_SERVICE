@@ -971,8 +971,10 @@ public class RequestDataCustomService {
                     reqdataProcessHis.setRankName(createrRankName);
                     reqdataProcessHis.setProcesser(creater);
                     reqdataProcessHis.setProcesserName(creater.getFullName());
-                    reqdataProcessHis.setStatus(requestDataCopy.getStatus().getStatusName());
+                    reqdataProcessHis.setProcessDate(Instant.now());
+                    reqdataProcessHis.setStatus("Đang Soạn");       // text cho giống với frontend
                     reqdataProcessHis.setIsChild(false);
+                    reqdataProcessHis.setDescription("Soạn thảo");  // text cho giống với frontend
                     this.reqdataProcessHisRepository.save(reqdataProcessHis);
 
                     // khi tạo thành công -> update numberRequestData của request
@@ -2003,13 +2005,21 @@ public class RequestDataCustomService {
             stepData.setRoundNumber(1L);
             stepDataSet.add(stepData);
         });
-        if(requestData.getRequestGroupName().contains(AppConstant.RequestGroupConstant.CONG_VAN_DEN)){
+        if(requestData.getRequestGroupName().contains(AppConstant.RequestGroupConstant.CONG_VAN_DEN)){          // nếu là công văn đến active bước 1 và thêm người tạo vào trong người xử lý
             int indexStepDataFirst = IntStream.range(0, stepDataSet.size()).filter(index -> 1L == stepDataSet.get(index).getStepOrder()).findFirst().getAsInt();
             stepDataSet.get(indexStepDataFirst).setIsActive(true);
             stepDataSet.get(indexStepDataFirst).setTimeActive(Instant.now());
             if(stepDataSet.get(indexStepDataFirst).getProcessingTerm() != null && stepDataSet.get(indexStepDataFirst).getProcessingTerm() > 0){
                 Double secondPlus = (stepDataSet.get(indexStepDataFirst).getProcessingTerm() * 3600);           // do chuyển từ Hours -> second => cần nhân thêm 60*60
                 stepDataSet.get(indexStepDataFirst).setProcessingTermTime(Instant.now().plus(secondPlus.longValue(), ChronoUnit.SECONDS));
+                    // thêm người tạo vào quy trình
+                if(stepDataSet.get(indexStepDataFirst).getUserInfos() != null)
+                    stepDataSet.get(indexStepDataFirst).getUserInfos().add(userInfo);
+                else {
+                    Set<UserInfo> userInfoSet = new HashSet<>();
+                    userInfoSet.add(userInfo);
+                    stepDataSet.get(indexStepDataFirst).setUserInfos(userInfoSet);
+                }
             }else{
                 stepDataSet.get(indexStepDataFirst).setProcessingTermTime(null);
             }
