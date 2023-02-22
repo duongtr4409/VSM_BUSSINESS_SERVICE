@@ -2,12 +2,14 @@ package com.vsm.business.repository;
 
 import com.vsm.business.domain.AttachmentFile;
 import com.vsm.business.domain.RequestData;
+import org.apache.poi.hmef.Attachment;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Spring Data SQL repository for the AttachmentFile entity.
@@ -87,4 +89,7 @@ public interface AttachmentFileRepository extends JpaRepository<AttachmentFile, 
     Optional<AttachmentFile> getAllParent(@Param("id") Long id, @Param("parentId") Long parentId);
 
     Optional<AttachmentFile> findByRequestDataIdAndIsFolder(Long requestDataId, Boolean isFolder);
+
+    @Query(value = "select * From attachment_file where template_form_id in :ids and request_data_id is null", nativeQuery = true)
+    List<AttachmentFile> getAllAttachmentFileTemplate(@Param("ids") Set<Long> ids);
 }

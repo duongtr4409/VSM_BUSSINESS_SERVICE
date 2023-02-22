@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.graph.models.DriveItem;
 import com.microsoft.graph.tasks.LargeFileUploadResult;
+import com.vsm.business.common.AppConstant;
 import com.vsm.business.common.Graph.GraphService;
 import com.vsm.business.config.Constants;
 import com.vsm.business.domain.*;
@@ -74,6 +75,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class RequestDataCustomService {
@@ -117,6 +119,8 @@ public class RequestDataCustomService {
 
     private final ManageStampInfoRepository manageStampInfoRepository;
 
+    private final ReqdataProcessHisRepository reqdataProcessHisRepository;
+
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -153,6 +157,9 @@ public class RequestDataCustomService {
 
     @Autowired
     private UserUtils userUtils;
+
+    @Autowired
+    private ObjectUtils objectUtil;
 
     private final String PDF_FORMAT = "pdf";
 
@@ -194,7 +201,8 @@ public class RequestDataCustomService {
         MailTemplateRepository mailTemplateRepository,
         AttachmentFileMapper attachmentFileMapper,
         SignDataRepository signDataRepository,
-        ManageStampInfoRepository manageStampInfoRepository
+        ManageStampInfoRepository manageStampInfoRepository,
+        ReqdataProcessHisRepository reqdataProcessHisRepository
     ) {
         this.requestDataRepository = requestDataRepository;
         this.requestDataMapper = requestDataMapper;
@@ -215,6 +223,7 @@ public class RequestDataCustomService {
         this.attachmentFileMapper = attachmentFileMapper;
         this.signDataRepository = signDataRepository;
         this.manageStampInfoRepository = manageStampInfoRepository;
+        this.reqdataProcessHisRepository = reqdataProcessHisRepository;
     }
 
     @Transactional(readOnly = true)
@@ -760,6 +769,235 @@ public class RequestDataCustomService {
         return result;
     }
 
+//    @Transactional
+    public Map<Long, Boolean> copyRequestDatas(List<Long> requestDataIds, Long userId) throws Exception {
+
+        Map<Long, Boolean> result = new HashMap<>();
+
+        UserInfo creater = this.userInfoRepository.findById(userId).get();
+        String createrOrgName = creater.getOrganizations() != null ? creater.getOrganizations().stream().map(ele -> ele.getOrganizationName()).collect(Collectors.joining(", ")) : "";
+        String createrRankName = creater.getRanks() != null ? creater.getRanks().stream().map(ele -> ele.getRankName()).collect(Collectors.joining(", ")) : "";
+
+        Status status_DANGSOAN = this.statusRepository.findAllByStatusCode(this.DANGSOAN).stream().findFirst().get();
+
+        Long requestDataIdDelete = null;
+        if(requestDataIds != null && !requestDataIds.isEmpty()){
+            for(Long requestDataId : requestDataIds){
+                try {
+                    RequestData requestData = this.requestDataRepository.findById(requestDataId).get();
+                    RequestData requestDataCopy = new RequestData();
+                    BeanUtils.copyProperties(requestData, requestDataCopy);
+                    // bỏ các thông tin ko cần copy trong requestData
+                    requestDataCopy.setId(null);
+                    requestDataCopy.setCreated(creater);
+                    requestDataCopy.setCreatedName(creater.getFullName());
+                    requestDataCopy.setCreatedDate(Instant.now());
+                    requestDataCopy.setCreatedOrgName(createrOrgName);
+                    requestDataCopy.setCreatedRankName(createrRankName);
+                    requestDataCopy.setModified(creater);
+                    requestDataCopy.setModifiedName(creater.getFullName());
+                    requestDataCopy.setModifiedDate(Instant.now());
+                    requestDataCopy.setResultSyncContract(null);
+                    requestDataCopy.setNumberAttach(null);
+                    requestDataCopy.setPlotOfLandNumber(null);
+                    requestDataCopy.contractExpireTime(null);
+                    requestDataCopy.setContractNumber(null);
+                    requestDataCopy.setTimeDone(null);
+                    requestDataCopy.setIsDone(false);
+                    requestDataCopy.subStatus(null);
+                    requestDataCopy.setRevoker(null);
+                    requestDataCopy.setRevokerName("");
+                    requestDataCopy.setRevokerOrgName("");
+                    requestDataCopy.setRevokerRankName("");
+                    requestDataCopy.setIsRevoked(false);
+                    requestDataCopy.setApprover(null);
+                    requestDataCopy.setApproverName("");
+                    requestDataCopy.setApproverOrgName("");
+                    requestDataCopy.setApproverRankName("");
+                    requestDataCopy.setIsApprove(false);
+                    requestDataCopy.setStatus(status_DANGSOAN);
+                    requestDataCopy.setStatusName(status_DANGSOAN.getStatusName());
+                    requestDataCopy.setIsActive(true);
+                    requestDataCopy.setIsDelete(false);
+                    requestDataCopy.setExpiredTime(null);
+                    requestDataCopy.setOldStatus(null);
+                    requestDataCopy.setCurrentRound(1L);
+                    requestDataCopy.setUserInfos(new HashSet<>());
+                    requestDataCopy.setReqdataChangeHis(new HashSet<>());
+                    requestDataCopy.setRequestRecalls(new HashSet<>());
+                    requestDataCopy.setReqdataProcessHis(new HashSet<>());
+                    requestDataCopy.setFieldData(new HashSet<>());
+                    requestDataCopy.setFormData(new HashSet<>());
+                    requestDataCopy.setAttachmentFiles(new HashSet<>());
+                    requestDataCopy.setProcessData(new HashSet<>());
+                    requestDataCopy.setStepData(new HashSet<>());
+                    requestDataCopy.setInformationInExchanges(new HashSet<>());
+                    requestDataCopy.setManageStampInfos(new HashSet<>());
+                    requestDataCopy.setSignData(new HashSet<>());
+                    requestDataCopy.setOTPS(new HashSet<>());
+                    requestDataCopy.setTagInExchanges(new HashSet<>());
+                    requestDataCopy = this.requestDataRepository.save(requestDataCopy);
+
+                    requestDataIdDelete = requestDataCopy.getId();
+
+                    // generate code \\
+                    Request request = this.requestRepository.findById(requestData.getRequest().getId()).get();
+                    RequestDTO requestDTO = new RequestDTO();
+                    requestDTO.setId(request.getId());
+                    requestDTO.setRuleGenerateCode(request.getRuleGenerateCode());
+                    RequestDataDTO requestDataDTO = new RequestDataDTO();
+                    requestDataDTO.setRequest(requestDTO);
+                    requestDataDTO = this.generateCodeUtils.generateRequestDataCode(requestDataDTO);
+                    requestDataCopy.setRequestDataCode(requestDataDTO.getRequestDataCode());
+
+
+                    // save success -> clone templateForm (AttachmentFile);
+                    // create new folder with code of RequestDataDto
+                    CreateFolder365Option createFolder365Option = new CreateFolder365Option();
+                    createFolder365Option.setCreatedId( requestDataCopy.getCreated() != null ? requestDataCopy.getCreated().getId() : null);
+                    createFolder365Option.setFolderName( requestDataCopy.getRequestDataCode() );
+                    createFolder365Option.setParentItemId( Strings.isNullOrEmpty(request.getIdDirectoryPath()) ?  this.uploadFile365CustomService.ROOT_FOLDER_ITEM_ID : request.getIdDirectoryPath());
+                    //createFolder365Option.setParentItemId(request.getIdDirectoryPath());
+                    AttachmentFileDTO folder = this.folder365CustomService.createFolder(createFolder365Option);
+                    AttachmentFile folderCreated = this.attachmentFileMapper.toEntity(folder);
+//            requestData.setDescription(folderCreated.getIdInFileService());
+                    requestDataCopy.setIdDirectoryPath(folderCreated.getItemId365());
+                    folderCreated.setRequestData(requestDataCopy);
+                    if(!Strings.isNullOrEmpty(request.getIdDirectoryPath())){            // cập nhật lại folder cha cho folder vừa tạo (folder của phiếu yêu cầu)
+                        try {
+                            AttachmentFile folderParent = this.attachmentFileRepository.findAllByItemId365(request.getIdDirectoryPath()).get(0);
+                            folderCreated.setParentId(folderParent.getId());
+                        }catch (Exception e){
+                            log.error("{}", e);
+                            folderCreated.setParentId(this.uploadFile365CustomService.getROOT_FOLDER() == null ? null : this.uploadFile365CustomService.getROOT_FOLDER().getId());
+                        }
+                    }else{
+                        folderCreated.setParentId(this.uploadFile365CustomService.getROOT_FOLDER() == null ? null : this.uploadFile365CustomService.getROOT_FOLDER().getId());
+                    }
+                    this.attachmentFileRepository.save(folderCreated);
+
+                    int stt = 1;
+                    List<Edit365Option> edit365OptionList = new ArrayList<>();
+                    List<AttachmentFile> attachmentFileList = this.attachmentFileRepository.getAllAttachmentFileTemplate(request.getTemplateForms().stream().map(ele -> ele.getId()).collect(Collectors.toSet()));
+                    for(AttachmentFile attachmentFile : attachmentFileList){
+                        Edit365Option edit365Option = new Edit365Option();
+                        edit365Option.setUserId(requestDataCopy.getCreated() != null ? requestDataCopy.getCreated().getId() : null);
+
+                        // sửa quy tắc đặt tên file thành : Số PYC_Tiêu đề (Tiếng việt không đâu)_STT.extension \\
+//            edit365Option.setFileName(attachmentFile.getFileName());
+                        String fileName = requestDataCopy.getRequestDataCode() + "_" + vnCharacterUtils.removeAccent(requestDataCopy.getTitle() == null ? "" : requestDataCopy.getTitle()).replaceAll("\\s", "") + "_" + stt + "." + attachmentFile.getFileExtension();
+                        if(Constants.TRUE.equals(FEATURE_GENERATE_FILE_NAME)){
+                            List<FieldData> fieldDataList = fieldDataRepository.findAllByRequestDataId(requestData.getId());
+                            fileName = generateCodeUtils.v2_generateFileName(stt, attachmentFile.getFileExtension(), requestDataCopy.getRuleGenerateAttachName(), request, requestDataCopy, fieldDataList);
+                        }
+                        edit365Option.setFileName(fileName);
+                        edit365Option.setSourceId(attachmentFile.getId());
+                        edit365Option.setFolderTargetId(folderCreated.getId());
+                        edit365OptionList.add(edit365Option);
+                        stt++;
+                    }
+                    this.uploadFile365CustomService.cloneListFile_v2(edit365OptionList, requestDataCopy);
+
+
+                    requestDataCopy = this.requestDataRepository.save(requestDataCopy);
+                    RequestData finalRequestDataCopy = requestDataCopy;
+                    CompletableFuture.runAsync(() -> {
+                        try {
+                            requestDataSearchRepository.save(finalRequestDataCopy);
+                        }catch (UncategorizedElasticsearchException  | GenericJDBCException | StackOverflowError e){
+                            log.error("{}", e.getMessage());
+                        }catch (Exception e){
+                            log.error("{}", e);
+                        }
+                    });
+
+                    // tạo formData \\
+                    List<FormData> formDataList = this.formDataRepository.findAllByRequestDataId(requestDataId);
+                    formDataList = formDataList.stream().map(ele -> {
+                        ele.setId(null);
+                        ele.setRequestData(finalRequestDataCopy);
+                        ele.setCreated(creater);
+                        ele.setModifiedName(creater.getFullName());
+                        ele.setCreatedRankName(createrRankName);
+                        ele.setCreatedOrgName(createrOrgName);
+                        ele.setCreatedDate(Instant.now());
+                        ele.setModified(creater);
+                        ele.setModifiedName(creater.getFullName());
+                        ele.setModifiedDate(Instant.now());
+                        return ele;
+                    }).collect(Collectors.toList());
+                    formDataList = this.formDataRepository.saveAll(formDataList);
+                    // fieldData \\
+                    List<FieldData> fieldDataList = this.fieldDataRepository.findAllByRequestDataId(requestDataId);
+                    fieldDataList = fieldDataList.stream().map(ele -> {
+                        ele.setId(null);
+                        ele.setRequestData(finalRequestDataCopy);
+                        ele.setCreated(creater);
+                        ele.setModifiedName(creater.getFullName());
+                        ele.setCreatedRankName(createrRankName);
+                        ele.setCreatedOrgName(createrOrgName);
+                        ele.setCreatedDate(Instant.now());
+                        ele.setModified(creater);
+                        ele.setModifiedName(creater.getFullName());
+                        ele.setModifiedDate(Instant.now());
+                        return ele;
+                    }).collect(Collectors.toList());
+                    fieldDataList = this.fieldDataRepository.saveAll(fieldDataList);
+
+                    // processData \\
+                    ProcessInfo processInfo = request.getProcessInfos().stream().filter(ele -> {
+                        return this.processInfoRepository.getAllProcessInfoUserPermission(userId).stream().anyMatch(ele1 -> ele.getId().equals(ele1.getId()));
+                    }).findFirst().orElseThrow(() -> new Exception("Not permission."));
+                    ProcessData processData = this.copyProcessInfoToProcessData(processInfo, creater, requestDataCopy, createrOrgName, createrRankName);
+                    processData = this.processDataRepository.save(processData);
+
+                    // stepData \\
+                    Set<StepInProcess> stepInProcessList = processInfo.getStepInProcesses();
+                    List<StepData> stepDataList = this.copyStepInProcessToStepData(stepInProcessList, creater, requestDataCopy, processData, createrOrgName, createrRankName);
+                    stepDataList = this.stepDataRepository.saveAll(stepDataList);
+
+                    // sign data - manage stamp info (nếu ko phải nhóm yêu cầu Công Văn Đến và Tờ Trình -> thì tạo)\\
+                    if(!requestDataCopy.getRequestGroupName().contains(AppConstant.RequestGroupConstant.CONG_VAN_DEN)
+                        && !requestDataCopy.getRequestGroupName().contains(AppConstant.RequestGroupConstant.TO_TRINH)){
+                        createSignDataAndManageStampInfo(requestDataCopy, creater, createrOrgName, createrRankName);
+                    }
+
+                    // history \\
+                    ReqdataProcessHis reqdataProcessHis = new ReqdataProcessHis();
+                    reqdataProcessHis.setRequestData(requestDataCopy);
+                    reqdataProcessHis.setCreateDate(Instant.now());
+                    reqdataProcessHis.setOrganizationName(createrOrgName);
+                    reqdataProcessHis.setRankName(createrRankName);
+                    reqdataProcessHis.setProcesser(creater);
+                    reqdataProcessHis.setProcesserName(creater.getFullName());
+                    reqdataProcessHis.setStatus(requestDataCopy.getStatus().getStatusName());
+                    reqdataProcessHis.setIsChild(false);
+                    this.reqdataProcessHisRepository.save(reqdataProcessHis);
+
+                    // khi tạo thành công -> update numberRequestData của request
+                    Long numberRequestData = request.getNumberRequestData() == null ? 0L : request.getNumberRequestData();
+                    request.setNumberRequestData(numberRequestData + 1);
+                    request = this.requestRepository.save(request);
+
+                    requestDataIdDelete = null;
+
+                    result.put(requestDataId, true);
+                }catch (Exception e){
+                    log.error("{}", e);
+
+                    try {
+                        if(requestDataIdDelete != null){
+                            this.requestDataRepository.deleteById(requestDataIdDelete);
+                        }
+                    }catch (Exception ex){};
+
+                    result.put(requestDataId, false);
+                }
+
+            }
+        }
+        return result;
+    }
 
     public List<AttachmentFileDTO> addAttachmentPrimaryToRequestData(MultipartFile file, Long requestDataId, Long templateFormId, Long userId) throws IOException {
         List<AttachmentFileDTO> attachmentFileDTOList = new ArrayList<>();
@@ -1714,7 +1952,113 @@ public class RequestDataCustomService {
         return result;
     }
 
+    private ProcessData copyProcessInfoToProcessData(ProcessInfo processInfo, UserInfo userInfo, RequestData requestData, String orgNameString, String rankNameString){
+        if(processInfo == null) return null;
+        ProcessData processData = new ProcessData();
+        BeanUtils.copyProperties(processInfo, processData);
+        processData.setId(null);
+        processData.setIsActive(true);
+        processData.setIsDelete(false);
+        processData.setRoundNumber(1L);
+        processData.setRequestData(requestData);
+        processData.setCreated(userInfo);
+        processData.setCreatedDate(Instant.now());
+        processData.setCreatedName(userInfo.getFullName());
+        processData.setCreatedRankName(rankNameString);
+        processData.setCreatedOrgName(orgNameString);
+        processData.setModified(userInfo);
+        processData.setModifiedDate(Instant.now());
+        processData.setModifiedName(userInfo.getFullName());
+        processData.setProcessDataCode(processInfo.getProcessCode());
+        processData.setProcessDataName(processInfo.getProcessName());
 
+        return processData;
+    }
+
+    private List<StepData> copyStepInProcessToStepData(Set<StepInProcess> stepInProcessSet, UserInfo userInfo, RequestData requestData, ProcessData processData,String orgNameString, String rankNameString){
+        if(stepInProcessSet == null) return null;
+        List<StepData> stepDataSet = new ArrayList<>();
+        stepInProcessSet.forEach(ele -> {
+            StepData stepData = new StepData();
+            BeanUtils.copyProperties(ele, stepData);
+            stepData.setId(null);
+            stepData.setStepDataName(ele.getStepInProcessName());
+            stepData.setStepDataCode(ele.getStepInProcessCode());
+            stepData.setStepInProcess(ele);
+            stepData.setProcessData(processData);
+            stepData.setRequestData(requestData);
+            stepData.setIsActive(false);
+            stepData.setTimeActive(null);
+            stepData.setProcessingTermTime(null);
+            stepData.setCreated(userInfo);
+            stepData.setCreatedDate(Instant.now());
+            stepData.setCreatedName(userInfo.getFullName());
+            stepData.setCreatedRankName(rankNameString);
+            stepData.setCreatedOrgName(orgNameString);
+            stepData.setModified(userInfo);
+            stepData.setModifiedDate(Instant.now());
+            stepData.setModifiedName(userInfo.getFullName());
+            stepData.setUserInfos(ele.getUserInSteps().stream().map(ele1 -> ele1.getUserInfo()).collect(Collectors.toSet()));
+            stepData.setRoundNumber(1L);
+            stepDataSet.add(stepData);
+        });
+        if(requestData.getRequestGroupName().contains(AppConstant.RequestGroupConstant.CONG_VAN_DEN)){
+            int indexStepDataFirst = IntStream.range(0, stepDataSet.size()).filter(index -> 1L == stepDataSet.get(index).getStepOrder()).findFirst().getAsInt();
+            stepDataSet.get(indexStepDataFirst).setIsActive(true);
+            stepDataSet.get(indexStepDataFirst).setTimeActive(Instant.now());
+            if(stepDataSet.get(indexStepDataFirst).getProcessingTerm() != null && stepDataSet.get(indexStepDataFirst).getProcessingTerm() > 0){
+                Double secondPlus = (stepDataSet.get(indexStepDataFirst).getProcessingTerm() * 3600);           // do chuyển từ Hours -> second => cần nhân thêm 60*60
+                stepDataSet.get(indexStepDataFirst).setProcessingTermTime(Instant.now().plus(secondPlus.longValue(), ChronoUnit.SECONDS));
+            }else{
+                stepDataSet.get(indexStepDataFirst).setProcessingTermTime(null);
+            }
+        }
+        return stepDataSet;
+    }
+
+    private void createSignDataAndManageStampInfo(RequestData requestData, UserInfo userInfo, String orgNameString, String rankNameString){
+        ManageStampInfo manageStampInfo = new ManageStampInfo();
+        manageStampInfo.setRequestData(requestData);
+        manageStampInfo.setCreater(userInfo);
+        manageStampInfo.setCreatedName(userInfo.getFullName());
+        manageStampInfo.setCreatedDate(Instant.now());
+        manageStampInfo.setCreatedRankName(rankNameString);
+        manageStampInfo.setCreatedOrgName(orgNameString);
+        manageStampInfo.setModifier(userInfo);
+        manageStampInfo.setModifiedName(userInfo.getFullName());
+        manageStampInfo.setModifiedDate(Instant.now());
+        manageStampInfo.setCopiesNumber(0L);
+        manageStampInfo.setContent("");
+        manageStampInfo.setStampName("");
+        manageStampInfo.setStampCode("");
+        manageStampInfo.setEmail("");
+        manageStampInfo.setName("");
+        manageStampInfo.setPhoneNumber("");
+        manageStampInfo.setAddress("");
+        manageStampInfo.setStamperName("");
+        manageStampInfo.setIsActive(true);
+        manageStampInfo.setIsDelete(false);
+        this.manageStampInfoRepository.save(manageStampInfo);
+        SignData signData = new SignData();
+        signData.setRequestData(requestData);
+        signData.setCreatedName(userInfo.getFullName());
+        signData.setCreatedDate(Instant.now());
+        signData.setCreatedRankName(rankNameString);
+        signData.setCreatedOrgName(orgNameString);
+        signData.setModifiedName(userInfo.getFullName());
+        signData.setModifiedate(Instant.now());
+        signData.setSignName("");
+        signData.setEmail("");
+        signData.setPhoneNumber("");
+        signData.setAddress("");
+        signData.setNumberSign(0L);
+        signData.setNumberPrint(0L);
+        signData.setNumberDownload(0L);
+        signData.setNumberView(0L);
+        signData.setIsActive(true);
+        signData.setIsDelete(false);
+        this.signDataRepository.save(signData);
+    }
 
     public static class TableFieldDuowngTora {
         private List<String> headers = new ArrayList<>();
