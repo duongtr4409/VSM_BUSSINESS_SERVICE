@@ -442,4 +442,22 @@ public interface RequestDataRepository extends JpaRepository<RequestData, Long>,
         "and (select NOT EXISTS(select excutor_id from result_of_step reost where reost.step_data_id = stda.id " +
         "and excutor_id in (select user_info_id from rel_user_info__organization where organization_id in ( :organizations )))) " , nativeQuery = true)
     Long countAllRequestDataNeedHandleOfOrganizations(@Param("organizations") List<Long> organizations);
+
+    // kiểm tra quyền \\
+
+        // kiểm tra quyền copy requestData \\
+
+    /**
+     * Hàm thực hiện lấy danh sách những loại yêu cầu mà user ko có quyền copy
+     * @param requestDataIds    : danh sách id của các phiếu cần copy
+     * @param userId            : userId
+     * @return                  : danh sách id của những loại yêu cầu user ko có quyền thao tác
+     */
+    @Query(value = "select request_id from request_data where id in :requestDataIds " +
+        "EXCEPT " +
+        "select request_id from rel_request__process_info " +
+        "where process_info_id in (select process_info_id from rel_process_info__organization " +
+        "where organization_id in (select organization_id from rel_user_info__organization where user_info_id = :userId))",
+    nativeQuery = true)
+    List<Long> checkPermissionCopyRequestData(@Param("requestDataIds") List<Long> requestDataIds, @Param("userId") Long userId);
 }

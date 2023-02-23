@@ -45,10 +45,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -514,10 +511,11 @@ public class UploadFile365CustomService {
                         AttachmentFile attachmentFileNew = new AttachmentFile();
                         BeanUtils.copyProperties(attachmentFile, attachmentFileNew);
                         attachmentFileNew.setId(null);
+                        attachmentFileNew.setItemId365(null);
                         attachmentFileNew.setParentId(edit365Option.getFolderTargetId());
                         attachmentFileNew.setFileName(nameOfCopy);
-                        attachmentFileNew.setAttachmentPermisitions(null);
-                        attachmentFileNew.setChangeFileHistories(null);
+                        attachmentFileNew.setAttachmentPermisitions(new HashSet<>());
+                        attachmentFileNew.setChangeFileHistories(new HashSet<>());
                         attachmentFileNew.setRequestData(requestData);
                         attachmentFileNew = this.attachmentFileRepository.save(attachmentFileNew);
                         addUserInFo(attachmentFile, created);
@@ -535,6 +533,7 @@ public class UploadFile365CustomService {
                             attachmentPermisition.setAttachmentFile(attachmentFileNew);
                             attachmentPermisition = this.attachmentPermisitionRepository.save(attachmentPermisition);
                             attachmentFileNew.getAttachmentPermisitions().add(attachmentPermisition);
+                            attachmentFileNew = this.attachmentFileRepository.save(attachmentFileNew);
                         }
                         attachmentFileList.add(attachmentFileNew);
                         return attachmentFileNew;
@@ -560,6 +559,8 @@ public class UploadFile365CustomService {
                                 attachmentFile.setItemId365(resultCopyTemp.id);
                                 attachmentFile.setOfice365Path(resultCopyTemp.webUrl);
                                 attachmentFile.setUrlView(null);
+                                attachmentFile.getAttachmentPermisitions();
+                                attachmentFile.getChangeFileHistories();
                                 attachmentFile = this.attachmentFileRepository.save(attachmentFile);
                                 attachmentFileResult.add(attachmentFile);
                             }catch (Exception e){
@@ -623,14 +624,10 @@ public class UploadFile365CustomService {
         if(download365Option.isPDF()) format = this.PDF_FORMAT;
         if(PDF_EXTENSION.equalsIgnoreCase(attachmentFile.getFileExtension())) format = "";                  // nếu là pdf sẵn rồi -> chuyển format về rỗng tránh lỗi
         InputStream inputStream = this.graphService.getFile(download365Option.getItemId(), format);
-        try {
-            inputStream = this.getFileContentWithOption(inputStream, download365Option, attachmentFile);
-            response.setContentType("application/octet-stream");
-            response.setHeader("Content-disposition", "attachment; filename=\"" + fileName +"\"");
-            response.getOutputStream().write(IOUtils.toByteArray(inputStream));
-        }finally {
-            inputStream.close();
-        }
+        inputStream = this.getFileContentWithOption(inputStream, download365Option, attachmentFile);
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-disposition", "attachment; filename=\"" + fileName +"\"");
+        response.getOutputStream().write(IOUtils.toByteArray(inputStream));
     }
 
     @Value("${system.qr-code.link:https://vcr.mobifone.ai/phieu-yeu-cau/chi-tiet/{{id}}}")

@@ -134,7 +134,7 @@ public class PdfSign {
 
             return DigestAlgorithms.digest(data, externalDigest.getMessageDigest(hashAlgorithm));
         } catch (Exception ex) {
-            logger.info("hashPdfFile: error", ex);
+            logger.error("hashPdfFile: error", ex);
             return null;
         }finally {
             this.closeObjectStream();
@@ -144,12 +144,12 @@ public class PdfSign {
     public byte[] signHashDataMobi(byte[] hash, String signer, String promptText) {
         try {
             String sDataToSignDigest = Base64Utils.base64Encode(hash);
-            logger.info("SignService signHashDataMobi: "+ signer +" - "+ promptText + " - " + sDataToSignDigest);
+            logger.debug("SignService signHashDataMobi: "+ signer +" - "+ promptText + " - " + sDataToSignDigest);
             byte[] dataSigned = sign(signer, promptText, sDataToSignDigest);
 
             return dataSigned;
         } catch (Exception ex) {
-            logger.info("signHashData: error", ex);
+            logger.error("signHashData: error", ex);
             return null;
         }
     }
@@ -245,7 +245,7 @@ public class PdfSign {
             String signature = String.valueOf(Hex.encodeHex(CryptoUtil.HmacSHA256(content, Constants.API_KEY)));
             String base64appid = CryptoUtil.Base64encode(Constants.AP_ID);
             String auth = CryptoUtil.Base64encode(base64appid + ":" + signature);
-            logger.info(bodyObj.toString());
+            logger.debug(bodyObj.toString());
             JSONObject json;
 
             com.mashape.unirest.http.HttpResponse<JsonNode> response =
@@ -260,7 +260,7 @@ public class PdfSign {
             JsonNode node = response.getBody();
             json = node.getObject();
             res = json;
-            logger.info(json.toString());
+            logger.debug(json.toString());
 
             if (json.has("MSS_SignatureResp")) {
                 String a = json.getJSONObject("MSS_SignatureResp").getJSONObject("MSS_Signature").getString("Base64Signature");
@@ -270,7 +270,7 @@ public class PdfSign {
                 return null;
             }
         } catch (Exception ex) {
-            logger.info("sign: error", ex);
+            logger.error("sign: error", ex);
             return null;
         }
     }
@@ -292,7 +292,7 @@ public class PdfSign {
             byte[] extSignature = sgn1.getEncodedPKCS7(hash, /*cal,*/ tsaClient, ocsp, crlBytes, sigtype);
             return extSignature;
         } catch (Exception ex) {
-            logger.info("signHashData: error", ex);
+            logger.error("signHashData: error", ex);
             return null;
         }
     }
@@ -324,7 +324,7 @@ public class PdfSign {
             reader.close();
             return count.toByteArray();
         } catch (Exception ex) {
-            logger.info("addExternalSignature: error", ex);
+            logger.error("addExternalSignature: error", ex);
             return null;
         }
     }
