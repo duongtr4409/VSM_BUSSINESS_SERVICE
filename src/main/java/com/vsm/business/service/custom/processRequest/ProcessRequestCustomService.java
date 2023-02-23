@@ -1486,6 +1486,10 @@ public class ProcessRequestCustomService {
             if (currentStepData == null)
                 return false;
 
+            // kiểm tra xem đã qua bước của khách hàng chưa nếu qua rồi -> trả về false;
+            if(stepDataList.stream().filter(ele -> ele.getIsSendMailCustomer() != null).allMatch(ele -> ele.getStepOrder() < currentStepData.getStepOrder()))
+                return false;
+
             return !this.signDataRepository.findAllByRequestDataId(requestDataId).stream().anyMatch(ele -> ele.getNumberSign() != null &&  ele.getNumberSign() > 0);
         }catch (Exception e){
             log.error("{}", e);
