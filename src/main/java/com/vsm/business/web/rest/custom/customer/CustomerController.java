@@ -313,6 +313,10 @@ public class CustomerController {
         // check otp \\
         this.checkPermissionSign(signDTO, otp);
 
+        // kiểm tra xem khách hàng có được ký số được ở phiếu hay không
+        if(!checkPermissionSignCustomer(signDTO))
+            return ResponseEntity.ok(new FailLoadMessage("Not permission..."));
+
         Object result = false;
         switch (signDTO.getSignType()){
             case Sim:
@@ -453,5 +457,27 @@ public class CustomerController {
                 requestDataId = signDTO.getRequestDataList().get(0);
         }
         return this.checkPermission(requestDataId, otp);
+    }
+
+    /**
+     * Hàm thực hiện kiểm tra khách hàng được ký phiếu yêu cầu không
+     * @param signDTO: thông tin yêu cầu ký (có chứa id phiếu)
+     * @return: true: nếu khách hàng được phép ký | false: nếu không được
+     */
+    private boolean checkPermissionSignCustomer(SignDTO signDTO){
+        Long requestDataId = 0L;
+        switch (signDTO.getSignType()){
+            case Token:
+                requestDataId = signDTO.getRequestDataId();
+                break;
+            default:
+                requestDataId = signDTO.getRequestDataList().get(0);
+                break;
+        }
+        List<StepDataDTO> currentStepDataList = this.stepDataCustomService.getCurrentStepData(requestDataId, true);
+        if(currentStepDataList == null || currentStepDataList.isEmpty()) return false;
+        StepDataDTO currentStepData = currentStepDataList.stream().filter(ele -> ele.getIsActive()).findFirst().orElse(null);
+        if(currentStepData == null) return false;
+        return currentStepData.getMailTemplateCustomer() != null;
     }
 }
