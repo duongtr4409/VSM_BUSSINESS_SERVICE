@@ -370,7 +370,7 @@ public class CustomerController {
 
         StepDataDTO stepData = this.stepDataCustomService.getCurrentStepData(requestDataId, true).stream().filter(ele -> ele.getIsActive()).findFirst().orElse(null);
         if(stepData == null) return ResponseEntity.ok().body(new FailLoadMessage(false));
-        else return ResponseEntity.ok().body(new LoadedMessage(stepData.getIsRequiredSignature()));
+        else return ResponseEntity.ok().body(new LoadedMessage(stepData.getIsRequiredSignature() && stepData.getMailTemplateCustomer() != null));
     }
 
     @PostMapping("/process/request_data")
