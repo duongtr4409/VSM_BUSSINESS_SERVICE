@@ -313,7 +313,8 @@ public class CategoryGroupCustomService {
                                     meCargo.setCreatedRankName(categoryGroup.getCreatedRankName());
                                     meCargo.setId(null);
                                 }
-                                repository.save(meCargo);
+                                meCargo = (MECargo) repository.save(meCargo);
+                                categoryGroup.setTennantCode(MECargoCustomService.PREFIX_CODE_MECARGO + meCargo.getId());
                             }else{
                                 ConstructionCargo constructionCargo = new ConstructionCargo();
                                 try {
@@ -333,8 +334,10 @@ public class CategoryGroupCustomService {
                                     constructionCargo.setCreatedOrgName(categoryGroup.getCreatedOrgName());
                                     constructionCargo.setCreatedRankName(categoryGroup.getCreatedRankName());
                                 }
-                                repository.save(constructionCargo);
+                                constructionCargo = (ConstructionCargo) repository.save(constructionCargo);
+                                categoryGroup.setTennantCode(ConstructionCargoCustomService.PREFIX_CODE_CONSTRUCTIONCARGO + constructionCargo.getId());
                             }
+                            this.categoryGroupRepository.save(categoryGroup);
                             break;
                         default:
                     }
