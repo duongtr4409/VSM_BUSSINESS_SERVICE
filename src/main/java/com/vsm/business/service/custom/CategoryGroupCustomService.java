@@ -269,15 +269,19 @@ public class CategoryGroupCustomService {
                 if(ME_CARGO_CATEGORY.getId().equals(categoryGroup.getParent().getId())){                        // nếu có cha là danh mục hàng hóa me
                     repository = this.meCargoRepository;
                     isMeCargo = true;
-                    if(categoryGroup.getTennantCode().startsWith(MECargoCustomService.PREFIX_CODE_MECARGO)){
-                        idAction = Long.valueOf(categoryGroup.getTennantCode().replace(MECargoCustomService.PREFIX_CODE_MECARGO, ""));
-                    }
+                    try {
+                        if(categoryGroup.getTennantCode().startsWith(MECargoCustomService.PREFIX_CODE_MECARGO)){
+                            idAction = Long.valueOf(categoryGroup.getTennantCode().replace(MECargoCustomService.PREFIX_CODE_MECARGO, ""));
+                        }
+                    }catch (Exception e2){}
                 }else if(CONSTRUCTION_CARGO_CATEGORY.getId().equals(categoryGroup.getParent().getId())){        // nếu có cha là danh mục hàng hóa xây dựng
                     repository = this.constructionCargoRepository;
                     isMeCargo = false;
-                    if(categoryGroup.getTennantCode().startsWith(ConstructionCargoCustomService.PREFIX_CODE_CONSTRUCTIONCARGO)){
-                        idAction = Long.valueOf(categoryGroup.getTennantCode().replace(ConstructionCargoCustomService.PREFIX_CODE_CONSTRUCTIONCARGO, ""));
-                    }
+                    try {
+                        if(categoryGroup.getTennantCode().startsWith(ConstructionCargoCustomService.PREFIX_CODE_CONSTRUCTIONCARGO)){
+                            idAction = Long.valueOf(categoryGroup.getTennantCode().replace(ConstructionCargoCustomService.PREFIX_CODE_CONSTRUCTIONCARGO, ""));
+                        }
+                    }catch (Exception e2){}
                 }else{
                     return;
                 }
