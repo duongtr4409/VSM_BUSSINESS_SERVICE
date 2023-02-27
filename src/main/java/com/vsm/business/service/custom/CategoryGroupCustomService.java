@@ -264,7 +264,7 @@ public class CategoryGroupCustomService {
         if(categoryGroup.getParent() != null){
             try {
                 JpaRepository repository = null;
-                Long idAction = 0l;
+                Long idAction = null;
                 boolean isMeCargo = false;
                 if(ME_CARGO_CATEGORY.getId().equals(categoryGroup.getParent().getId())){                        // nếu có cha là danh mục hàng hóa me
                     repository = this.meCargoRepository;
@@ -286,7 +286,7 @@ public class CategoryGroupCustomService {
                     return;
                 }
 
-                if(repository != null && idAction > 0){
+                if(repository != null){
                     switch (action){
                         case ACTION_DELETE:
                                 repository.deleteById(idAction);
