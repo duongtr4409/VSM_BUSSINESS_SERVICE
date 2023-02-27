@@ -54,7 +54,7 @@ public class MECargoCustomService {
 
     public final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final String PREFIX_CODE_MECARGO = "mecargo_";
+    public static final String PREFIX_CODE_MECARGO = "mecargo_";
 
     @Value("${cargo.me_cargo_name:Hàng hóa ME}")
     private String ME_CARGO_NAME;
@@ -272,6 +272,7 @@ public class MECargoCustomService {
                             ele1.setName(ele.getNoi_dung_cong_viec());
                             ele1.setIsActive(true);
                             ele1.setIsDelete(false);
+                            ele1.setTennantCode(PREFIX_CODE_MECARGO + ele.getId());
                             try {
                                 ele1.setDescription(objectMapper.writeValueAsString(ele));
                             }catch (Exception e){log.error("{}", e);};
@@ -315,6 +316,7 @@ public class MECargoCustomService {
                 categoryGroup.setModifiedName(myUserDetail.getFullName());
                 categoryGroup.setModifiedDate(Instant.now());
                 categoryGroup.setModified(userInfo);
+                categoryGroup.setTennantCode(PREFIX_CODE_MECARGO + ele.getId());
                 this.categoryGroupRepository.save(categoryGroup);
             }catch (Exception ex){
                 log.error("{}", ex);
@@ -339,6 +341,7 @@ public class MECargoCustomService {
                             ele1.setName(ele.getNoi_dung_cong_viec());
                             ele1.setIsActive(true);
                             ele1.setIsDelete(false);
+                            ele1.setTennantCode(PREFIX_CODE_MECARGO + ele.getId());
                             try {
                                 ele1.setDescription(objectMapper.writeValueAsString(ele));
                             }catch (Exception e){log.error("{}", e);};
@@ -365,6 +368,7 @@ public class MECargoCustomService {
                     categoryGroup.setModifiedName(myUserDetail.getFullName());
                     categoryGroup.setModifiedDate(Instant.now());
                     categoryGroup.setModified(userInfo);
+                    categoryGroup.setTennantCode(this.PREFIX_CODE_MECARGO + ele.getId());
                     this.categoryGroupRepository.save(categoryGroup);
                 }
             }catch (Exception ex){

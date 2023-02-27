@@ -53,7 +53,7 @@ public class ConstructionCargoCustomService {
 
     public final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final String PREFIX_CODE_CONSTRUCTIONCARGO = "constructioncargo_";
+    public static final String PREFIX_CODE_CONSTRUCTIONCARGO = "constructioncargo_";
 
     @Value("${cargo.construction_cargo_name:Hàng hóa dịch vụ xây dựng}")
     private String CONSTRUCTION_CARGO_NAME;
@@ -159,7 +159,7 @@ public class ConstructionCargoCustomService {
     @Value("${bp-schedule.folder-sync:/temp/excel}")
     public String ExcelFolder;
 
-    private List<String> LIST_FIELD_NAME = Arrays.asList("stt", "noi_nung_cong_viec", "quy_cach_ky_thuat", "ma_hieu", "don_vi_tinh", "don_gia_ha_noi", "don_gia_hcm");
+    private List<String> LIST_FIELD_NAME = Arrays.asList("stt", "noi_dung_cong_viec", "quy_cach_ky_thuat", "ma_hieu", "don_vi_tinh", "don_gia_ha_noi", "don_gia_hcm");
 
     public boolean importCargo(MultipartFile file) throws IOException, InvalidFormatException {
         this.objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -273,6 +273,7 @@ public class ConstructionCargoCustomService {
                             ele1.setName(ele.getNoi_dung_cong_viec());
                             ele1.setIsActive(true);
                             ele1.setIsDelete(false);
+                            ele1.setTennantCode(this.PREFIX_CODE_CONSTRUCTIONCARGO + ele.getId());
                             try {
                                 ele1.setDescription(objectMapper.writeValueAsString(ele));
                             }catch (Exception e){log.error("{}", e);};
@@ -316,6 +317,7 @@ public class ConstructionCargoCustomService {
                 categoryGroup.setModifiedName(myUserDetail.getFullName());
                 categoryGroup.setModifiedDate(Instant.now());
                 categoryGroup.setModified(userInfo);
+                categoryGroup.setTennantCode(this.PREFIX_CODE_CONSTRUCTIONCARGO + ele.getId());
                 this.categoryGroupRepository.save(categoryGroup);
             }catch (Exception ex){
                 log.error("{}", ex);
@@ -340,6 +342,7 @@ public class ConstructionCargoCustomService {
                             ele1.setName(ele.getNoi_dung_cong_viec());
                             ele1.setIsActive(true);
                             ele1.setIsDelete(false);
+                            ele1.setTennantCode(this.PREFIX_CODE_CONSTRUCTIONCARGO + ele.getId());
                             try {
                                 ele1.setDescription(objectMapper.writeValueAsString(ele));
                             }catch (Exception e){log.error("{}", e);};
@@ -366,6 +369,7 @@ public class ConstructionCargoCustomService {
                     categoryGroup.setModifiedName(myUserDetail.getFullName());
                     categoryGroup.setModifiedDate(Instant.now());
                     categoryGroup.setModified(userInfo);
+                    categoryGroup.setTennantCode(this.PREFIX_CODE_CONSTRUCTIONCARGO + ele.getId());
                     this.categoryGroupRepository.save(categoryGroup);
                 }
             }catch (Exception ex){
