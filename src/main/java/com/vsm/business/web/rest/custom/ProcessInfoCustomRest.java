@@ -8,10 +8,12 @@ import com.vsm.business.common.ReponseMessage.SuccessMessage.LoadedMessage;
 import com.vsm.business.common.ReponseMessage.SuccessMessage.UpdatedMessage;
 import com.vsm.business.repository.ProcessInfoRepository;
 import com.vsm.business.service.ProcessInfoService;
+import com.vsm.business.service.auth.bo.MyUserDetail;
 import com.vsm.business.service.custom.ProcessInfoCustomService;
 import com.vsm.business.service.custom.search.service.ProcessInfoSearchService;
 import com.vsm.business.service.custom.search.service.bo.ISearchResponseDTO;
 import com.vsm.business.service.dto.ProcessInfoDTO;
+import com.vsm.business.utils.AuthenticateUtils;
 import com.vsm.business.utils.GenerateCodeUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.vsm.business.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +31,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.PaginationUtil;
 
@@ -56,15 +61,21 @@ public class ProcessInfoCustomRest {
 
     private ProcessInfoSearchService processInfoSearchService;
 
+    private UserUtils userUtils;
+
+    private AuthenticateUtils authenticateUtils;
+
     private Map<String, ProcessInfoDTO> processInfoDTOMap = new HashMap<>();
 
     private final String ERROR_EXIST_REQUEST = "Không thể xóa quy trình đang hoạt động";
 
-    public ProcessInfoCustomRest(ProcessInfoService processInfoService, ProcessInfoRepository processInfoRepository, ProcessInfoCustomService processInfoCustomService, ProcessInfoSearchService processInfoSearchService) {
+    public ProcessInfoCustomRest(ProcessInfoService processInfoService, ProcessInfoRepository processInfoRepository, ProcessInfoCustomService processInfoCustomService, ProcessInfoSearchService processInfoSearchService, UserUtils userUtils, AuthenticateUtils authenticateUtils) {
         this.processInfoService = processInfoService;
         this.processInfoCustomService = processInfoCustomService;
         this.processInfoRepository = processInfoRepository;
         this.processInfoSearchService = processInfoSearchService;
+        this.userUtils = userUtils;
+        this.authenticateUtils = authenticateUtils;
     }
 
     @Scheduled(cron = "${cron.tab}")
@@ -85,20 +96,14 @@ public class ProcessInfoCustomRest {
     @Autowired
     private GenerateCodeUtils generateCodeUtils;
     public String generateCode(ProcessInfoDTO processInfoDTO){
-        if(this.processInfoDTOMap == null || this.processInfoDTOMap.size() == 0) this.loadProcessInfo();
+        if(this.processInfoDTOMap.size() == 0) this.loadProcessInfo();
         try {
             String code = this.generateCodeUtils.generateCode(processInfoDTO.getProcessName(), this.processInfoDTOMap, ProcessInfoDTO.class, "getProcessCode");
             processInfoDTO.setProcessCode(code);
             this.processInfoDTOMap.put(code, processInfoDTO);
-
-            this.processInfoDTOMap = null;
-
             return code;
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             log.debug("{}", e.getStackTrace());
-
-            this.processInfoDTOMap = null;
-
             return null;
         }
     }
@@ -297,6 +302,17 @@ public class ProcessInfoCustomRest {
         }catch (Exception e){
             return ResponseEntity.ok().body(new ErrorMessage(this.ERROR_EXIST_REQUEST, result));
         }
+        return ResponseEntity.ok().body(new LoadedMessage(result));
+    }
+
+    @GetMapping("/request/{requestId}/_all_with_role/process-infos")
+    public ResponseEntity<IResponseMessage> getAllProcessInfoByRequestWithRole(@PathVariable("requestId") Long requestId, @RequestParam(value = "ignoreField", required = false, defaultValue = "false") Boolean ignoreField){
+        List<ProcessInfoDTO> result = new ArrayList<>();
+        MyUserDetail currentUser = this.userUtils.getCurrentUser();
+        if(currentUser == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN, this.authenticateUtils.NOT_AUTHORITY_MESS);
+
+        processInfoCustomService.getAllByRequestIdWithRole(requestId, currentUser.getId(), ignoreField);
+        log.debug("REST request to ProcessInfoCustomRest: getAllProcessInfoByRequestWithRole(requestId: {}, ignoreField: {}): {}", requestId, ignoreField, result);
         return ResponseEntity.ok().body(new LoadedMessage(result));
     }
 

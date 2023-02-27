@@ -226,6 +226,25 @@ public class ProcessInfoCustomService {
         return result;
     }
 
+    public List<ProcessInfoDTO> getAllByRequestIdWithRole(Long requestId, Long userId, boolean ignoreField){
+        List<ProcessInfoDTO> result = new ArrayList<>();
+        if(ignoreField){
+            result = processInfoRepository.getAllProcessByRequestWithRole(requestId, userId).stream().map(ele -> {
+                ProcessInfoDTO processInfoDTO = new ProcessInfoDTO();
+                try {
+                    BeanUtils.copyProperties(ele, processInfoDTO);
+                }catch (Exception e){
+                    log.error("{}", e);
+                }
+                return processInfoDTO;
+            }).collect(Collectors.toList());
+        }else{
+            result = processInfoRepository.getAllProcessByRequestWithRole(requestId, userId).stream().map(ele -> processInfoMapper.toDto(ele)).collect(Collectors.toList());
+        }
+        log.debug("ProcessInfoCustomService getAllByRequestIdWithRole(requestId: {}, userId: {}, {}): ignoreField: {}", requestId, userId, ignoreField, result);
+        return result;
+    }
+	
     private Boolean checkExist(ProcessInfoDTO processInfoDTO) {
         ProcessInfo processInfo = this.processInfoRepository.findById(processInfoDTO.getId()).orElse(null);
         Boolean result = processInfo.getRequests().stream().anyMatch(ele -> !this.conditionUtils.checkTrueFalse(ele.getIsDelete()));

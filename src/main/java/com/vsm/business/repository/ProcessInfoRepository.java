@@ -38,6 +38,13 @@ public interface ProcessInfoRepository extends JpaRepository<ProcessInfo, Long>,
     nativeQuery = true)
     List<ProcessInfo> getAllProcessInfoUserPermission(@Param("userId") Long userId);
 
+    @Query(value = "select * From process_info " +
+        "where id in (select process_info_id From rel_request__process_info where request_id = :requestId) " +
+        "and id in (select process_info_id from rel_process_info__organization " +
+        "where organization_id in (select organization_id from rel_user_info__organization where user_info_id = :userId)) ",
+    nativeQuery = true)
+    List<ProcessInfo> getAllProcessByRequestWithRole(@Param("requestId") Long requestId, @Param("userId") Long userId);
+
 //    @Query(value = "select req from Request req where :processInfo MEMBER OF req.processInfos")
 //    List<Request> getAllRequestByProcessInfo(@Param("processInfo") ProcessInfo processInfo);
 
