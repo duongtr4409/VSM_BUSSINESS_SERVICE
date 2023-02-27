@@ -123,11 +123,11 @@ public class ConstructionCargo implements Serializable {
     }
 
     public ConstructionCargo noiDungCongViec(String noiDungCongViec) {
-        this.setNoiDungCongViec(noiDungCongViec);
+        this.setNoi_dung_cong_viec(noiDungCongViec);
         return this;
     }
 
-    public void setNoiDungCongViec(String noiDungCongViec) {
+    public void setNoi_dung_cong_viec(String noiDungCongViec) {
         this.noi_dung_cong_viec = noiDungCongViec;
     }
 
@@ -136,11 +136,11 @@ public class ConstructionCargo implements Serializable {
     }
 
     public ConstructionCargo quyCachKyThuat(String quyCachKyThuat) {
-        this.setQuyCachKyThuat(quyCachKyThuat);
+        this.setQuy_cach_ky_thuat(quyCachKyThuat);
         return this;
     }
 
-    public void setQuyCachKyThuat(String quyCachKyThuat) {
+    public void setQuy_cach_ky_thuat(String quyCachKyThuat) {
         this.quy_cach_ky_thuat = quyCachKyThuat;
     }
 
@@ -149,11 +149,11 @@ public class ConstructionCargo implements Serializable {
     }
 
     public ConstructionCargo maHieu(String maHieu) {
-        this.setMaHieu(maHieu);
+        this.setMa_hieu(maHieu);
         return this;
     }
 
-    public void setMaHieu(String maHieu) {
+    public void setMa_hieu(String maHieu) {
         this.ma_hieu = maHieu;
     }
 
@@ -162,11 +162,11 @@ public class ConstructionCargo implements Serializable {
     }
 
     public ConstructionCargo donViTinh(String donViTinh) {
-        this.setDonViTinh(donViTinh);
+        this.setDon_vi_tinh(donViTinh);
         return this;
     }
 
-    public void setDonViTinh(String donViTinh) {
+    public void setDon_vi_tinh(String donViTinh) {
         this.don_vi_tinh = donViTinh;
     }
 
@@ -175,11 +175,11 @@ public class ConstructionCargo implements Serializable {
     }
 
     public ConstructionCargo donGiaHaNoi(Double donGiaHaNoi) {
-        this.setDonGiaHaNoi(donGiaHaNoi);
+        this.setDon_gia_ha_noi(donGiaHaNoi);
         return this;
     }
 
-    public void setDonGiaHaNoi(Double donGiaHaNoi) {
+    public void setDon_gia_ha_noi(Double donGiaHaNoi) {
         this.don_gia_ha_noi = donGiaHaNoi;
     }
 
@@ -188,11 +188,11 @@ public class ConstructionCargo implements Serializable {
     }
 
     public ConstructionCargo donGiaHaNoiStr(String donGiaHaNoiStr) {
-        this.setDonGiaHaNoiStr(donGiaHaNoiStr);
+        this.setDon_gia_ha_noi_str(donGiaHaNoiStr);
         return this;
     }
 
-    public void setDonGiaHaNoiStr(String donGiaHaNoiStr) {
+    public void setDon_gia_ha_noi_str(String donGiaHaNoiStr) {
         this.don_gia_ha_noi_str = donGiaHaNoiStr;
     }
 
@@ -201,11 +201,11 @@ public class ConstructionCargo implements Serializable {
     }
 
     public ConstructionCargo donGiaHCM(Double donGiaHCM) {
-        this.setDonGiaHCM(donGiaHCM);
+        this.setDon_gia_hcm(donGiaHCM);
         return this;
     }
 
-    public void setDonGiaHCM(Double donGiaHCM) {
+    public void setDon_gia_hcm(Double donGiaHCM) {
         this.don_gia_hcm = donGiaHCM;
     }
 
@@ -214,11 +214,11 @@ public class ConstructionCargo implements Serializable {
     }
 
     public ConstructionCargo donGiaHCMStr(String donGiaHCMStr) {
-        this.setDonGiaHCMStr(donGiaHCMStr);
+        this.setDon_gia_hcm_str(donGiaHCMStr);
         return this;
     }
 
-    public void setDonGiaHCMStr(String donGiaHCMStr) {
+    public void setDon_gia_hcm_str(String donGiaHCMStr) {
         this.don_gia_hcm_str = donGiaHCMStr;
     }
 

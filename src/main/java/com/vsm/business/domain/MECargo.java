@@ -123,11 +123,11 @@ public class MECargo implements Serializable {
     }
 
     public MECargo noiDungCongViec(String noiDungCongViec) {
-        this.setNoiDungCongViec(noiDungCongViec);
+        this.setNoi_dung_cong_viec(noiDungCongViec);
         return this;
     }
 
-    public void setNoiDungCongViec(String noiDungCongViec) {
+    public void setNoi_dung_cong_viec(String noiDungCongViec) {
         this.noi_dung_cong_viec = noiDungCongViec;
     }
 
@@ -136,11 +136,11 @@ public class MECargo implements Serializable {
     }
 
     public MECargo quyCachKyThuat(String quyCachKyThuat) {
-        this.setQuyCachKyThuat(quyCachKyThuat);
+        this.setQuy_cach_ky_thuat(quyCachKyThuat);
         return this;
     }
 
-    public void setQuyCachKyThuat(String quyCachKyThuat) {
+    public void setQuy_cach_ky_thuat(String quyCachKyThuat) {
         this.quy_cach_ky_thuat = quyCachKyThuat;
     }
 
@@ -149,11 +149,11 @@ public class MECargo implements Serializable {
     }
 
     public MECargo maHieu(String maHieu) {
-        this.setMaHieu(maHieu);
+        this.setMa_hieu(maHieu);
         return this;
     }
 
-    public void setMaHieu(String maHieu) {
+    public void setMa_hieu(String maHieu) {
         this.ma_hieu = maHieu;
     }
 
@@ -162,11 +162,11 @@ public class MECargo implements Serializable {
     }
 
     public MECargo donViTinh(String donViTinh) {
-        this.setDonViTinh(donViTinh);
+        this.setDon_vi_tinh(donViTinh);
         return this;
     }
 
-    public void setDonViTinh(String donViTinh) {
+    public void setDon_vi_tinh(String donViTinh) {
         this.don_vi_tinh = donViTinh;
     }
 
@@ -175,11 +175,11 @@ public class MECargo implements Serializable {
     }
 
     public MECargo donGiaVatTuVatLieu(Double donGiaVatTuVatLieu) {
-        this.setDonGiaVatTuVatLieu(donGiaVatTuVatLieu);
+        this.setDon_gia_vat_tu_vat_lieu(donGiaVatTuVatLieu);
         return this;
     }
 
-    public void setDonGiaVatTuVatLieu(Double donGiaVatTuVatLieu) {
+    public void setDon_gia_vat_tu_vat_lieu(Double donGiaVatTuVatLieu) {
         this.don_gia_vat_tu_vat_lieu = donGiaVatTuVatLieu;
     }
 
@@ -188,11 +188,11 @@ public class MECargo implements Serializable {
     }
 
     public MECargo donGiaVatTuVatLieuStr(String donGiaVatTuVatLieuStr) {
-        this.setDonGiaVatTuVatLieuStr(donGiaVatTuVatLieuStr);
+        this.setDon_gia_vat_tu_vat_lieu_str(donGiaVatTuVatLieuStr);
         return this;
     }
 
-    public void setDonGiaVatTuVatLieuStr(String donGiaVatTuVatLieuStr) {
+    public void setDon_gia_vat_tu_vat_lieu_str(String donGiaVatTuVatLieuStr) {
         this.don_gia_vat_tu_vat_lieu_str = donGiaVatTuVatLieuStr;
     }
 
@@ -201,11 +201,11 @@ public class MECargo implements Serializable {
     }
 
     public MECargo donGiaNhanCong(Double donGiaNhanCong) {
-        this.setDonGiaNhanCong(donGiaNhanCong);
+        this.setDon_gia_nhan_cong(donGiaNhanCong);
         return this;
     }
 
-    public void setDonGiaNhanCong(Double donGiaNhanCong) {
+    public void setDon_gia_nhan_cong(Double donGiaNhanCong) {
         this.don_gia_nhan_cong = donGiaNhanCong;
     }
 
@@ -214,11 +214,11 @@ public class MECargo implements Serializable {
     }
 
     public MECargo donGiaNhanCongStr(String donGiaNhanCongStr) {
-        this.setDonGiaNhanCongStr(donGiaNhanCongStr);
+        this.setDon_gia_nhan_cong_str(donGiaNhanCongStr);
         return this;
     }
 
-    public void setDonGiaNhanCongStr(String donGiaNhanCongStr) {
+    public void setDon_gia_nhan_cong_str(String donGiaNhanCongStr) {
         this.don_gia_nhan_cong_str = donGiaNhanCongStr;
     }
 

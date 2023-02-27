@@ -223,13 +223,13 @@ public class MECargoCustomService {
 
     private MECargo update(MECargo meCargoOld, MECargo meCargoNew, MyUserDetail cuMyUserDetail){
         if(meCargoOld == null || meCargoNew == null) return meCargoOld;
-        meCargoOld.setNoiDungCongViec(meCargoNew.getNoi_dung_cong_viec());
-        meCargoOld.setQuyCachKyThuat(meCargoNew.getQuy_cach_ky_thuat());
-        meCargoOld.setDonViTinh(meCargoNew.getDon_vi_tinh());
-        meCargoOld.setDonGiaVatTuVatLieu(meCargoNew.getDon_gia_vat_tu_vat_lieu());
-        meCargoOld.setDonGiaNhanCong(meCargoNew.getDon_gia_nhan_cong());
-        meCargoOld.setDonGiaVatTuVatLieuStr(meCargoOld.getDon_gia_vat_tu_vat_lieu() != null ? meCargoOld.getDon_gia_vat_tu_vat_lieu().toString() : "");
-        meCargoOld.setDonGiaNhanCongStr(meCargoOld.getDon_gia_nhan_cong() != null ? meCargoOld.getDon_gia_nhan_cong().toString() : "");
+        meCargoOld.setNoi_dung_cong_viec(meCargoNew.getNoi_dung_cong_viec());
+        meCargoOld.setQuy_cach_ky_thuat(meCargoNew.getQuy_cach_ky_thuat());
+        meCargoOld.setDon_vi_tinh(meCargoNew.getDon_vi_tinh());
+        meCargoOld.setDon_gia_vat_tu_vat_lieu(meCargoNew.getDon_gia_vat_tu_vat_lieu());
+        meCargoOld.setDon_gia_nhan_cong(meCargoNew.getDon_gia_nhan_cong());
+        meCargoOld.setDon_gia_vat_tu_vat_lieu_str(meCargoOld.getDon_gia_vat_tu_vat_lieu() != null ? meCargoOld.getDon_gia_vat_tu_vat_lieu().toString() : "");
+        meCargoOld.setDon_gia_nhan_cong_str(meCargoOld.getDon_gia_nhan_cong() != null ? meCargoOld.getDon_gia_nhan_cong().toString() : "");
         meCargoOld.setModifiedDate(Instant.now());
         meCargoOld.setModifiedName(cuMyUserDetail.getFullName());
         meCargoOld.setIsDelete(false);
@@ -241,8 +241,8 @@ public class MECargoCustomService {
         if(meCargo == null) return meCargo;
         String cargoCode = meCargo.getMa_hieu();         // mã đang là mã hiệu
         meCargo.setCargoCode(cargoCode);
-        meCargo.setDonGiaNhanCongStr(meCargo.getDon_gia_nhan_cong() != null ? meCargo.getDon_gia_nhan_cong().toString() : "");
-        meCargo.setDonGiaVatTuVatLieuStr(meCargo.getDon_gia_vat_tu_vat_lieu() != null ? meCargo.getDon_gia_vat_tu_vat_lieu().toString() : "");
+        meCargo.setDon_gia_nhan_cong_str(meCargo.getDon_gia_nhan_cong() != null ? meCargo.getDon_gia_nhan_cong().toString() : "");
+        meCargo.setDon_gia_vat_tu_vat_lieu_str(meCargo.getDon_gia_vat_tu_vat_lieu() != null ? meCargo.getDon_gia_vat_tu_vat_lieu().toString() : "");
         meCargo.setCreatedName(currentUser.getFullName());
         meCargo.setCreatedDate(Instant.now());
         meCargo.setModifiedName(currentUser.getFullName());

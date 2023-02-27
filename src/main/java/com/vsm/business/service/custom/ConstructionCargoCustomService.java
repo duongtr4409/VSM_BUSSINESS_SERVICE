@@ -224,13 +224,13 @@ public class ConstructionCargoCustomService {
 
     private ConstructionCargo update(ConstructionCargo constructionCargoOld, ConstructionCargo constructionCargoNew, MyUserDetail cuMyUserDetail){
         if(constructionCargoOld == null || constructionCargoNew == null) return constructionCargoOld;
-        constructionCargoOld.setNoiDungCongViec(constructionCargoNew.getNoi_dung_cong_viec());
-        constructionCargoOld.setQuyCachKyThuat(constructionCargoNew.getQuy_cach_ky_thuat());
-        constructionCargoOld.setDonViTinh(constructionCargoNew.getDon_vi_tinh());
-        constructionCargoOld.setDonGiaHaNoi(constructionCargoNew.getDon_gia_ha_noi());
-        constructionCargoOld.setDonGiaHCM(constructionCargoNew.getDon_gia_hcm());
-        constructionCargoOld.setDonGiaHaNoiStr(constructionCargoOld.getDon_gia_ha_noi() != null ? constructionCargoOld.getDon_gia_ha_noi().toString() : "");
-        constructionCargoOld.setDonGiaHCMStr(constructionCargoOld.getDon_gia_hcm() != null ? constructionCargoOld.getDon_gia_hcm().toString() : "");
+        constructionCargoOld.setNoi_dung_cong_viec(constructionCargoNew.getNoi_dung_cong_viec());
+        constructionCargoOld.setQuy_cach_ky_thuat(constructionCargoNew.getQuy_cach_ky_thuat());
+        constructionCargoOld.setDon_vi_tinh(constructionCargoNew.getDon_vi_tinh());
+        constructionCargoOld.setDon_gia_ha_noi(constructionCargoNew.getDon_gia_ha_noi());
+        constructionCargoOld.setDon_gia_hcm(constructionCargoNew.getDon_gia_hcm());
+        constructionCargoOld.setDon_gia_ha_noi_str(constructionCargoOld.getDon_gia_ha_noi() != null ? constructionCargoOld.getDon_gia_ha_noi().toString() : "");
+        constructionCargoOld.setDon_gia_hcm_str(constructionCargoOld.getDon_gia_hcm() != null ? constructionCargoOld.getDon_gia_hcm().toString() : "");
         constructionCargoOld.setModifiedDate(Instant.now());
         constructionCargoOld.setModifiedName(cuMyUserDetail.getFullName());
         constructionCargoOld.setIsDelete(false);
@@ -242,8 +242,8 @@ public class ConstructionCargoCustomService {
         if(constructionCargo == null) return constructionCargo;
         String cargoCode = constructionCargo.getMa_hieu();         // mã đang là mã hiệu
         constructionCargo.setCargoCode(cargoCode);
-        constructionCargo.setDonGiaHaNoiStr(constructionCargo.getDon_gia_ha_noi() != null ? constructionCargo.getDon_gia_ha_noi().toString() : "");
-        constructionCargo.setDonGiaHCMStr(constructionCargo.getDon_gia_hcm() != null ? constructionCargo.getDon_gia_hcm().toString() : "");
+        constructionCargo.setDon_gia_ha_noi_str(constructionCargo.getDon_gia_ha_noi() != null ? constructionCargo.getDon_gia_ha_noi().toString() : "");
+        constructionCargo.setDon_gia_hcm_str(constructionCargo.getDon_gia_hcm() != null ? constructionCargo.getDon_gia_hcm().toString() : "");
         constructionCargo.setCreatedName(currentUser.getFullName());
         constructionCargo.setCreatedDate(Instant.now());
         constructionCargo.setModifiedName(currentUser.getFullName());

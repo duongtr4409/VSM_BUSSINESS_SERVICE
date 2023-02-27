@@ -30,6 +30,7 @@ import org.springframework.data.elasticsearch.UncategorizedElasticsearchExceptio
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -298,10 +299,18 @@ public class CategoryGroupCustomService {
                                 try {
                                     meCargo = this.objectMapper.readValue(categoryGroup.getDescription(), MECargo.class);
                                 }catch (Exception e1){log.error("{}", e1);}
-                                meCargo.setNoiDungCongViec(categoryGroup.getName());
+                                meCargo.setNoi_dung_cong_viec(categoryGroup.getName());
+                                meCargo.setIsActive(true);
+                                meCargo.setIsDelete(false);
                                 if(ACTION_UPDATE.equals(action)){
                                     meCargo.setId(idAction);
+                                    meCargo.setModifiedName(categoryGroup.getModifiedName());
+                                    meCargo.setModifiedDate(Instant.now());
                                 }else if(ACTION_INSERT.equals(action)){
+                                    meCargo.setCreatedDate(Instant.now());
+                                    meCargo.setCreatedName(categoryGroup.getCreatedName());
+                                    meCargo.setCreatedOrgName(categoryGroup.getCreatedOrgName());
+                                    meCargo.setCreatedRankName(categoryGroup.getCreatedRankName());
                                     meCargo.setId(null);
                                 }
                                 repository.save(meCargo);
@@ -310,11 +319,19 @@ public class CategoryGroupCustomService {
                                 try {
                                     constructionCargo = this.objectMapper.readValue(categoryGroup.getDescription(), ConstructionCargo.class);
                                 }catch (Exception e1){log.error("{}", e1);}
-                                constructionCargo.setNoiDungCongViec(categoryGroup.getName());
+                                constructionCargo.setIsActive(true);
+                                constructionCargo.setIsDelete(false);
+                                constructionCargo.setNoi_dung_cong_viec(categoryGroup.getName());
                                 if(ACTION_UPDATE.equals(action)){
                                     constructionCargo.setId(idAction);
+                                    constructionCargo.setModifiedName(categoryGroup.getModifiedName());
+                                    constructionCargo.setModifiedDate(Instant.now());
                                 }else if(ACTION_INSERT.equals(action)){
                                     constructionCargo.setId(null);
+                                    constructionCargo.setCreatedDate(Instant.now());
+                                    constructionCargo.setCreatedName(categoryGroup.getCreatedName());
+                                    constructionCargo.setCreatedOrgName(categoryGroup.getCreatedOrgName());
+                                    constructionCargo.setCreatedRankName(categoryGroup.getCreatedRankName());
                                 }
                                 repository.save(constructionCargo);
                             }
