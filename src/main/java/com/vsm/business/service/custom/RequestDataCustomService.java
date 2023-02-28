@@ -946,8 +946,9 @@ public class RequestDataCustomService {
                     fieldDataList = this.fieldDataRepository.saveAll(fieldDataList);
 
                     // processData \\
+                    List<ProcessInfo> listProcessInfoUserPermission = this.processInfoRepository.getAllProcessInfoUserPermission(userId);       // lấy danh sách quy trình mà user được phép dùng
                     ProcessInfo processInfo = request.getProcessInfos().stream().filter(ele -> {
-                        return this.processInfoRepository.getAllProcessInfoUserPermission(userId).stream().anyMatch(ele1 -> ele.getId().equals(ele1.getId()));
+                        return listProcessInfoUserPermission.stream().anyMatch(ele1 -> ele.getId().equals(ele1.getId()));
                     }).findFirst().orElseThrow(() -> new Exception("Not permission."));
                     ProcessData processData = this.copyProcessInfoToProcessData(processInfo, creater, requestDataCopy, createrOrgName, createrRankName);
                     processData = this.processDataRepository.save(processData);
