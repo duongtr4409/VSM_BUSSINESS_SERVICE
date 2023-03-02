@@ -594,7 +594,7 @@ public class RequestDataCustomService {
             AttachmentFile attachmentFile = this.attachmentFileMapper.toEntity(attachmentFileDTO);
 
             Edit365Option edit365Option = new Edit365Option();
-            edit365Option.setUserId(requestData.getUserInfos() != null ? requestData.getCreated().getId() : null);
+            edit365Option.setUserId(requestData.getCreated() != null ? requestData.getCreated().getId() : null);
 
             // sửa quy tắc đặt tên file thành : Số PYC_Tiêu đề (Tiếng việt không đâu)_STT.extension \\
 //            edit365Option.setFileName(attachmentFile.getFileName());
