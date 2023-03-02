@@ -267,12 +267,6 @@ public class FieldDataCustomService {
                     }
                 }catch (Exception e){log.error("{}", e);}
             }
-
-            // clear memory
-            try {
-                attachmentFileList = null;
-            }catch (Exception e){log.error("{}", e);}
-
         }
 
         return this.convertToDTO(listUpdate);
