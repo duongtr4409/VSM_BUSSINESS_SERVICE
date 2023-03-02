@@ -327,6 +327,7 @@ public class UploadFile365CustomService {
         attachmentFileNew.setOfice365Path(copyResult.webUrl);
         attachmentFileNew.setAttachmentPermisitions(null);
         attachmentFileNew.setChangeFileHistories(null);
+        attachmentFileNew = addUserInFo(attachmentFileNew, created);
         attachmentFileNew = this.attachmentFileRepository.save(attachmentFileNew);
         addUserInFo(attachmentFile, created);
 
@@ -355,6 +356,7 @@ public class UploadFile365CustomService {
         attachmentFileNew.setAttachmentPermisitions(null);
         attachmentFileNew.setChangeFileHistories(null);
         attachmentFileNew.setRequestData(requestData);
+        attachmentFileNew = addUserInFo(attachmentFileNew, created);
         attachmentFileNew = this.attachmentFileRepository.save(attachmentFileNew);
         addUserInFo(sourceAttachmentFile, created);
 
@@ -393,6 +395,7 @@ public class UploadFile365CustomService {
         attachmentFileNew.setAttachmentPermisitions(null);
         attachmentFileNew.setChangeFileHistories(null);
         attachmentFileNew.setRequestData(requestData);
+        attachmentFileNew = addUserInFo(attachmentFileNew, created);
         attachmentFileNew = this.attachmentFileRepository.save(attachmentFileNew);
         addUserInFo(attachmentFile, created);
 
@@ -431,6 +434,7 @@ public class UploadFile365CustomService {
                 attachmentFileNew.setAttachmentPermisitions(null);
                 attachmentFileNew.setChangeFileHistories(null);
                 attachmentFileNew.setRequestData(requestData);
+                attachmentFileNew = addUserInFo(attachmentFileNew, created);
                 attachmentFileNew = this.attachmentFileRepository.save(attachmentFileNew);
                 addUserInFo(attachmentFile, created);
 
@@ -517,6 +521,7 @@ public class UploadFile365CustomService {
                         attachmentFileNew.setAttachmentPermisitions(new HashSet<>());
                         attachmentFileNew.setChangeFileHistories(new HashSet<>());
                         attachmentFileNew.setRequestData(requestData);
+                        attachmentFileNew = addUserInFo(attachmentFileNew, created);
                         attachmentFileNew = this.attachmentFileRepository.save(attachmentFileNew);
                         addUserInFo(attachmentFile, created);
 
